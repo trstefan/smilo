@@ -1,6 +1,8 @@
 "use client"
 
 import { FormEvent, useState } from "react"
+import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
 import { FormInput } from "./form-input"
 
 interface RegisterFormProps {
@@ -43,12 +45,15 @@ function validateConfirmPassword(password: string, confirmPassword: string): str
 }
 
 export function RegisterForm({ onToggleView }: RegisterFormProps) {
+  const router = useRouter()
   const [displayName, setDisplayName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [errors, setErrors] = useState<RegisterErrors>({})
   const [touched, setTouched] = useState<Record<string, boolean>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const validateForm = (): boolean => {
     const newErrors: RegisterErrors = {
@@ -86,11 +91,41 @@ export function RegisterForm({ onToggleView }: RegisterFormProps) {
     setErrors(newErrors)
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setTouched({ displayName: true, email: true, password: true, confirmPassword: true })
+    setSubmitError(null)
+
     if (validateForm()) {
-      console.log("Register submitted:", { displayName, email, password })
+      setIsSubmitting(true)
+      const supabase = createClient()
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            displayName,
+          },
+        },
+      })
+
+      if (error) {
+        // If it's a rate limit error or invalid email, this will catch it
+        setSubmitError(error.message)
+        setIsSubmitting(false)
+      } else if (data.user && data.session === null) {
+        // Email confirmation is required
+        if (data.user.identities && data.user.identities.length === 0) {
+          setSubmitError("An account with this email already exists.")
+        } else {
+          setSubmitError("Success! Please check your email inbox to confirm your account.")
+        }
+        setIsSubmitting(false)
+      } else {
+        // If email confirmation is disabled or they're automatically logged in
+        router.push("/profile")
+      }
     }
   }
 
@@ -155,11 +190,18 @@ export function RegisterForm({ onToggleView }: RegisterFormProps) {
           error={touched.confirmPassword ? errors.confirmPassword : undefined}
         />
 
+        {submitError && (
+          <div className="text-red-500 text-sm mt-2 font-medium">
+            {submitError}
+          </div>
+        )}
+
         <button
           type="submit"
-          className="w-full bg-foreground text-background py-3 rounded-xl font-medium hover:opacity-90 transition-all active:scale-[0.98] mt-2"
+          disabled={isSubmitting}
+          className="w-full bg-foreground text-background py-3 rounded-xl font-medium hover:opacity-90 transition-all active:scale-[0.98] mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          Create account
+          {isSubmitting ? "Creating account..." : "Create account"}
         </button>
       </form>
     </div>

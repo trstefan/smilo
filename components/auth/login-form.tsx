@@ -1,6 +1,8 @@
 "use client"
 
 import { FormEvent, useState } from "react"
+import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
 import { FormInput } from "./form-input"
 
 interface LoginFormProps {
@@ -26,10 +28,13 @@ function validatePassword(password: string): string | undefined {
 }
 
 export function LoginForm({ onToggleView }: LoginFormProps) {
+  const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [errors, setErrors] = useState<LoginErrors>({})
   const [touched, setTouched] = useState<Record<string, boolean>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const validateForm = (): boolean => {
     const newErrors: LoginErrors = {
@@ -49,11 +54,26 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
     }
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setTouched({ email: true, password: true })
+    setSubmitError(null)
+    
     if (validateForm()) {
-      console.log("Login submitted:", { email, password })
+      setIsSubmitting(true)
+      const supabase = createClient()
+      
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (error) {
+        setSubmitError(error.message)
+        setIsSubmitting(false)
+      } else {
+        router.push("/profile")
+      }
     }
   }
 
@@ -96,11 +116,18 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
           error={touched.password ? errors.password : undefined}
         />
 
+        {submitError && (
+          <div className="text-red-500 text-sm mt-2 font-medium">
+            {submitError}
+          </div>
+        )}
+
         <button
           type="submit"
-          className="w-full bg-foreground text-background py-3 rounded-xl font-medium hover:opacity-90 transition-all active:scale-[0.98] mt-2"
+          disabled={isSubmitting}
+          className="w-full bg-foreground text-background py-3 rounded-xl font-medium hover:opacity-90 transition-all active:scale-[0.98] mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          Login
+          {isSubmitting ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>
