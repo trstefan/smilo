@@ -1,16 +1,20 @@
 "use client"
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState, Suspense } from "react";
 import { LayoutDashboard, BarChart2, Users, FolderKanban, Settings, Bell, Menu, Plus, User, LogOut } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 
-export default function ProfileLayout({ children }: { children: ReactNode }) {
+
+function ProfileLayoutContent({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
-
+  
+  const activeTab = searchParams.get('tab') || 'dashboard'
+  
   useEffect(() => {
     async function getUser() {
       const { data: { user } } = await supabase.auth.getUser()
@@ -60,24 +64,24 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
         </div>
 
         <nav className="flex-1 px-4 py-8 space-y-2 text-[15px]">
-          <Link href="/profile" className="flex items-center space-x-3 bg-[#1A1A1A] text-white px-4 py-3 rounded-lg font-medium transition-colors">
-            <LayoutDashboard className="w-5 h-5 text-[#4AC4E9]" />
+          <Link href="/profile?tab=dashboard" className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'dashboard' ? 'bg-[#1A1A1A] text-white' : 'text-zinc-500 hover:text-white'}`}>
+            <LayoutDashboard className={`w-5 h-5 ${activeTab === 'dashboard' ? 'text-[#4AC4E9]' : ''}`} />
             <span>Dashboard</span>
           </Link>
-          <Link href="#" className="flex items-center space-x-3 text-zinc-500 hover:text-white px-4 py-3 rounded-lg font-medium transition-colors">
-            <BarChart2 className="w-5 h-5" />
+          <Link href="/profile?tab=analytics" className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'analytics' || activeTab === 'history' ? 'bg-[#1A1A1A] text-white' : 'text-zinc-500 hover:text-white'}`}>
+            <BarChart2 className={`w-5 h-5 ${activeTab === 'analytics' || activeTab === 'history' ? 'text-[#4AC4E9]' : ''}`} />
             <span>Analytics</span>
           </Link>
-          <Link href="#" className="flex items-center space-x-3 text-zinc-500 hover:text-white px-4 py-3 rounded-lg font-medium transition-colors">
-            <Users className="w-5 h-5" />
+          <Link href="/profile?tab=team" className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'team' ? 'bg-[#1A1A1A] text-white' : 'text-zinc-500 hover:text-white'}`}>
+            <Users className={`w-5 h-5 ${activeTab === 'team' ? 'text-[#4AC4E9]' : ''}`} />
             <span>Team</span>
           </Link>
-          <Link href="#" className="flex items-center space-x-3 text-zinc-500 hover:text-white px-4 py-3 rounded-lg font-medium transition-colors">
-            <FolderKanban className="w-5 h-5" />
+          <Link href="/profile?tab=projects" className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'projects' ? 'bg-[#1A1A1A] text-white' : 'text-zinc-500 hover:text-white'}`}>
+            <FolderKanban className={`w-5 h-5 ${activeTab === 'projects' ? 'text-[#4AC4E9]' : ''}`} />
             <span>Projects</span>
           </Link>
-          <Link href="#" className="flex items-center space-x-3 text-zinc-500 hover:text-white px-4 py-3 rounded-lg font-medium transition-colors">
-            <Settings className="w-5 h-5" />
+          <Link href="/profile?tab=settings" className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'settings' ? 'bg-[#1A1A1A] text-white' : 'text-zinc-500 hover:text-white'}`}>
+            <Settings className={`w-5 h-5 ${activeTab === 'settings' ? 'text-[#4AC4E9]' : ''}`} />
             <span>Settings</span>
           </Link>
         </nav>
@@ -131,32 +135,46 @@ export default function ProfileLayout({ children }: { children: ReactNode }) {
         </main>
 
         {/* Mobile Bottom Navigation */}
-        <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-zinc-100 px-6 py-2 flex items-center justify-between z-50 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] pt-3 pb-5">
-          <Link href="/profile" className="flex flex-col items-center p-2 text-[#006699] flex-1">
-            <LayoutDashboard className="w-6 h-6 mb-1.5" />
-            <span className="text-[10px] font-bold">Dashboard</span>
+        <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-zinc-100 flex items-center justify-around z-50 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] pt-2 pb-safe-offset-2 pb-4 px-2">
+          {/* Dashboard */}
+          <Link href="/profile?tab=dashboard" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'dashboard' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
+            <LayoutDashboard className={`w-[22px] h-[22px] ${activeTab === 'dashboard' ? 'mb-1' : 'mb-1'}`} />
+            <span className="text-[10px] font-semibold">Dashboard</span>
           </Link>
-          <Link href="#" className="flex flex-col items-center p-2 text-zinc-400 hover:text-zinc-600 transition-colors flex-1">
-             <BarChart2 className="w-6 h-6 mb-1.5" />
+
+          {/* Analytics */}
+          <Link href="/profile?tab=analytics" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'analytics' || activeTab === 'history' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
+            <BarChart2 className="w-[22px] h-[22px] mb-1" />
             <span className="text-[10px] font-semibold">Analytics</span>
           </Link>
-          
-          <div className="relative -top-8 flex-1 flex justify-center">
-            <button className="w-[60px] h-[60px] flex items-center justify-center rounded-full bg-[#006699] text-white shadow-[0_8px_20px_rgba(0,102,153,0.3)] border-[6px] border-[#FAFAFA] transition-transform active:scale-95">
-              <Plus className="w-7 h-7" />
-            </button>
-          </div>
 
-          <Link href="#" className="flex flex-col items-center p-2 text-zinc-400 hover:text-zinc-600 transition-colors flex-1">
-             <Users className="w-6 h-6 mb-1.5" />
+          {/* Team */}
+          <Link href="/profile?tab=team" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'team' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
+             <Users className="w-[22px] h-[22px] mb-1" />
             <span className="text-[10px] font-semibold">Team</span>
           </Link>
-          <button onClick={handleLogout} className="flex flex-col items-center p-2 text-zinc-400 hover:text-zinc-600 transition-colors flex-1">
-             <LogOut className="w-6 h-6 mb-1.5" />
-            <span className="text-[10px] font-semibold">Log Out</span>
-          </button>
+          
+          {/* Projects */}
+          <Link href="/profile?tab=projects" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'projects' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
+             <FolderKanban className="w-[22px] h-[22px] mb-1" />
+            <span className="text-[10px] font-semibold">Projects</span>
+          </Link>
+
+          {/* Settings */}
+          <Link href="/profile?tab=settings" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'settings' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
+             <Settings className="w-[22px] h-[22px] mb-1" />
+            <span className="text-[10px] font-semibold">Settings</span>
+          </Link>
         </nav>
       </div>
     </div>
   );
+}
+
+export default function ProfileLayout({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#FAFAFA]" />}>
+      <ProfileLayoutContent>{children}</ProfileLayoutContent>
+    </Suspense>
+  )
 }
