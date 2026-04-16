@@ -58,9 +58,8 @@ function ProfileLayoutContent({ children }: { children: ReactNode }) {
       <aside className="hidden md:flex flex-col w-64 bg-[#111111] text-white h-screen shrink-0 sticky top-0">
         <div className="p-8">
           <div className="flex items-center space-x-1 mb-1">
-            <h1 className="text-2xl font-bold tracking-tight">MONOLITH<span className="text-[#4AC4E9]">.</span></h1>
+            <h1 className="text-2xl font-bold tracking-tight">SMILO<span className="text-[#4AC4E9]">.</span></h1>
           </div>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">Editorial Admin</p>
         </div>
 
         <nav className="flex-1 px-4 py-8 space-y-2 text-[15px]">
@@ -76,9 +75,9 @@ function ProfileLayoutContent({ children }: { children: ReactNode }) {
             <Users className={`w-5 h-5 ${activeTab === 'team' ? 'text-[#4AC4E9]' : ''}`} />
             <span>Team</span>
           </Link>
-          <Link href="/profile?tab=projects" className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'projects' ? 'bg-[#1A1A1A] text-white' : 'text-zinc-500 hover:text-white'}`}>
+          <Link href="/profile?tab=suggestions" className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'projects' ? 'bg-[#1A1A1A] text-white' : 'text-zinc-500 hover:text-white'}`}>
             <FolderKanban className={`w-5 h-5 ${activeTab === 'projects' ? 'text-[#4AC4E9]' : ''}`} />
-            <span>Projects</span>
+            <span>Suggestions</span>
           </Link>
           <Link href="/profile?tab=settings" className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'settings' ? 'bg-[#1A1A1A] text-white' : 'text-zinc-500 hover:text-white'}`}>
             <Settings className={`w-5 h-5 ${activeTab === 'settings' ? 'text-[#4AC4E9]' : ''}`} />
@@ -111,16 +110,10 @@ function ProfileLayoutContent({ children }: { children: ReactNode }) {
       <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">
         {/* Mobile Top Navigation */}
         <header className="md:hidden flex items-center justify-between px-6 py-5 bg-[#FAFAFA]/80 backdrop-blur-md sticky top-0 z-10">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-full bg-[#2A2A2A] text-white flex flex-col items-center justify-center font-bold text-xs shrink-0">
-             M.
-            </div>
-            <h1 className="text-xl font-bold tracking-tight">MONOLITH.</h1>
+          <div className="space-x-2.5">
+            <h1 className="text-xl font-bold tracking-tight">SMILO.</h1>
           </div>
           <div className="flex items-center space-x-3">
-            <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm border border-zinc-100 text-zinc-600 transition-transform active:scale-95">
-              <Bell className="w-[18px] h-[18px]" />
-            </button>
             <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm border border-zinc-100 text-zinc-600 transition-transform active:scale-95">
               <Menu className="w-[18px] h-[18px]" />
             </button>

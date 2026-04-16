@@ -6,8 +6,8 @@ import { createClient } from "@/lib/supabase/client"
 import { useSearchParams, useRouter } from "next/navigation"
 
 import { DashboardView } from "@/components/profile/dashboard-view"
-import { AnalyticsOverview } from "@/components/profile/analytics-overview"
 import { AnalyticsHistory } from "@/components/profile/analytics-history"
+import { SuggestionsView } from "@/components/profile/suggestions-view"
 import { User } from "@supabase/supabase-js"
 
 // ==========================================
@@ -17,9 +17,8 @@ function ProfilePageContent() {
   const [user, setUser] = useState<User | null>(null)
   const supabase = createClient()
   const searchParams = useSearchParams()
-  const router = useRouter()
   
-  const activeTab = searchParams.get('tab') || 'dashboard'
+  const activeTab = (searchParams.get('tab') || 'dashboard') === 'history' ? 'analytics' : searchParams.get('tab') || 'dashboard'
 
   useEffect(() => {
     async function getUser() {
@@ -31,7 +30,7 @@ function ProfilePageContent() {
 
   const displayName = user?.user_metadata?.displayName || user?.email?.split('@')[0] || "User"
 
-  if (activeTab === 'analytics' || activeTab === 'history') {
+  if (activeTab === 'analytics') {
     return (
       <div className="w-full max-w-[1400px] mx-auto p-6 md:p-10 min-h-screen">
         {/* Global Analytics Header */}
@@ -44,56 +43,33 @@ function ProfilePageContent() {
               {/* Mobile native-like title area */}
               <div className="md:hidden flex items-center justify-between w-full">
                 <h1 className="text-2xl font-bold tracking-tight">Analytics</h1>
-                <div className="flex items-center space-x-3">
-                  <button className="text-zinc-500 hover:text-zinc-900"><Search className="w-5 h-5"/></button>
-                  <button className="text-zinc-500 hover:text-zinc-900"><Bell className="w-5 h-5"/></button>
-                  <div className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center font-bold text-xs ring-2 ring-white">
-                    {displayName.charAt(0).toUpperCase()}
-                  </div>
-                </div>
               </div>
             </div>
 
             {/* Sub-navigation Tabs */}
             <div className="flex items-center gap-6 mt-4 md:mt-1 px-1">
-              <button 
-                onClick={() => router.push('/profile?tab=analytics')} 
-                className={`pb-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'analytics' ? 'border-[#006699] text-[#006699]' : 'border-transparent text-zinc-500 hover:text-zinc-900'}`}
-              >
-                Overview
-              </button>
-              <button 
-                onClick={() => router.push('/profile?tab=history')} 
-                className={`pb-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'history' ? 'border-[#006699] text-[#006699]' : 'border-transparent text-zinc-500 hover:text-zinc-900'}`}
-              >
-                History
-              </button>
+               {/* Content moved to unified responsive layout */}
             </div>
-          </div>
-          
-          {/* Top Right Actions (Desktop) */}
-          <div className="hidden md:flex items-center gap-4">
-             <div className="flex items-center space-x-4 mr-4">
-                <button className="text-zinc-400 hover:text-zinc-900"><Bell className="w-[18px] h-[18px]" /></button>
-                <button className="text-zinc-400 hover:text-zinc-900"><Flame className="w-[18px] h-[18px]" /></button>
-             </div>
-             <button className="h-10 px-6 bg-[#006699] hover:bg-[#005580] text-white text-sm font-bold rounded-full transition-colors drop-shadow-md">
-                Create New
-             </button>
-             <div className="w-10 h-10 rounded-full bg-zinc-900 text-white flex items-center justify-center ml-2 border border-zinc-200 overflow-hidden relative">
-              
-             </div>
           </div>
 
         </div>
 
         {/* Tab Constraints */}
-        {activeTab === 'analytics' ? <AnalyticsOverview /> : <AnalyticsHistory />}
+        {activeTab === 'analytics' && <AnalyticsHistory />}
       </div>
     )
   }
 
-  // Dashboard Fallback for 'dashboard' or 'team' / 'projects' etc.
+  if (activeTab === 'suggestions') {
+    return (
+      <div className="w-full h-full">
+        {/* Mobile secondary header could go here, or handled inside component */}
+        <SuggestionsView />
+      </div>
+    )
+  }
+
+  // Dashboard Fallback for 'dashboard' or 'requests' etc.
   return <DashboardView displayName={displayName} />
 }
 

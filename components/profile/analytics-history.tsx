@@ -1,11 +1,13 @@
-import { Flame, ChevronLeft, ChevronRight } from "lucide-react"
+import { Flame, Users as UsersIcon, Trophy, Target } from "lucide-react"
 
 export function AnalyticsHistory() {
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
       
-      {/* 4 Cards Stats header (Desktop matches Image 2) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+      {/* ======================= */}
+      {/* DESKTOP 4 CARDS (md+)   */}
+      {/* ======================= */}
+      <div className="hidden md:grid grid-cols-4 gap-6">
         <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-zinc-100 flex flex-col justify-center">
           <p className="text-[10px] font-bold tracking-[0.1em] text-zinc-500 uppercase mb-4">Total Quests</p>
           <h3 className="text-[2.5rem] font-bold text-[#006699] leading-none mb-3">124</h3>
@@ -31,47 +33,88 @@ export function AnalyticsHistory() {
         </div>
       </div>
 
-      {/* Main Grid: Calendar left, Side stats right */}
+      {/* ======================= */}
+      {/* MOBILE 4 CARDS (<md)    */}
+      {/* ======================= */}
+      <div className="grid md:hidden grid-cols-2 gap-4">
+        {/* Card 1 */}
+        <div className="bg-white p-5 rounded-3xl shadow-sm border border-zinc-100">
+          <div className="flex justify-between items-start mb-6">
+            <Target className="w-5 h-5 text-[#006699]" />
+            <span className="bg-[#6EE7B7]/20 text-[#047857] text-[10px] font-bold px-2 py-0.5 rounded-full">+12%</span>
+          </div>
+          <p className="text-xs font-semibold text-zinc-500 mb-1">Total Quests</p>
+          <h3 className="text-2xl font-bold text-zinc-900 tracking-tight">124</h3>
+        </div>
+
+        {/* Card 2 */}
+        <div className="bg-white p-5 rounded-3xl shadow-sm border border-zinc-100">
+          <div className="flex justify-between items-start mb-6">
+            <UsersIcon className="w-5 h-5 text-purple-600" />
+          </div>
+          <p className="text-xs font-semibold text-zinc-500 mb-1">People Impacted</p>
+          <h3 className="text-2xl font-bold text-zinc-900 tracking-tight">842</h3>
+        </div>
+
+        {/* Card 3 */}
+        <div className="bg-white p-5 rounded-3xl shadow-sm border border-zinc-100">
+          <div className="mb-6">
+            <Flame className="w-5 h-5 text-emerald-600" />
+          </div>
+          <p className="text-xs font-semibold text-zinc-500 mb-1">Current Streak</p>
+          <h3 className="text-2xl font-bold text-zinc-900 tracking-tight">18</h3>
+        </div>
+
+        {/* Card 4 */}
+        <div className="bg-white p-5 rounded-3xl shadow-sm border border-zinc-100">
+          <div className="mb-6">
+            <Trophy className="w-5 h-5 text-[#006699]" />
+          </div>
+          <p className="text-xs font-semibold text-zinc-500 mb-1">Longest Streak</p>
+          <h3 className="text-2xl font-bold text-zinc-900 tracking-tight">42</h3>
+        </div>
+      </div>
+
+      {/* ======================= */}
+      {/* MAIN CONTENT GRID       */}
+      {/* ======================= */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8 pb-20">
         
-        {/* Left: Activity Calendar */}
-        <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-sm border border-zinc-100">
-          <div className="flex justify-between items-center mb-10">
-            <h3 className="text-lg font-bold text-zinc-900">Activity Calendar</h3>
-            <div className="flex items-center space-x-4">
-              <button className="text-zinc-400 hover:text-zinc-900"><ChevronLeft className="w-5 h-5"/></button>
-              <span className="text-sm font-bold text-zinc-900">October 2023</span>
-              <button className="text-zinc-400 hover:text-zinc-900"><ChevronRight className="w-5 h-5"/></button>
-            </div>
+        {/* Left: Daily Activity Strip (Overview's Design, adapted for all views) */}
+        <div className="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-sm border border-zinc-100 flex flex-col justify-center">
+          <div className="flex justify-between items-end mb-8 md:mb-10">
+            <h3 className="text-lg font-bold text-zinc-900">Daily Activity</h3>
+            <span className="text-sm font-semibold text-[#006699] cursor-pointer">September</span>
           </div>
-
-          <div className="grid grid-cols-7 gap-y-6 text-center">
-            {['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].map(day => (
-              <div key={day} className="text-[10px] font-bold tracking-widest text-zinc-400 mb-2">{day}</div>
-            ))}
-            
-            {/* Calendar Days */}
-            {Array.from({length: 31}).map((_, i) => {
-              const day = i + 1;
-              const isInactive = day < 1 || day > 26; // Grey out some past/future days for visual
-              const isActive = day === 8;
-              const hasDot = [2, 3, 7, 9, 10, 12, 13, 14, 15, 18, 19].includes(day);
-              
-              if (isInactive) {
-                 return <div key={`grey-${i}`} className="flex justify-center"><div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center text-sm font-semibold text-zinc-300">2{i}</div></div>
-              }
-
-              return (
-                <div key={day} className="flex justify-center">
-                  <div className={`w-10 h-10 md:w-12 md:h-12 flex flex-col items-center justify-center rounded-full relative ${isActive ? 'border-2 border-[#006699] text-[#006699]' : 'bg-zinc-100 text-zinc-800'}`}>
-                    <span className="text-xs md:text-sm font-bold">{day}</span>
-                    {hasDot && <div className="absolute bottom-2 md:bottom-2.5 w-1 h-1 rounded-full bg-[#006699]" />}
+          
+          <div className="flex justify-between items-center px-1 md:px-4 relative z-0">
+            {[
+              { day: 'MON', date: '12', active: false, dot: 'bg-emerald-500' },
+              { day: 'TUE', date: '13', active: false, dot: 'bg-indigo-500', dot2: 'bg-purple-400' },
+              { day: 'WED', date: '14', active: true, dot: 'bg-white' },
+              { day: 'THU', date: '15', active: false, dot: null },
+              { day: 'FRI', date: '16', active: false, dot: 'bg-emerald-500' },
+              { day: 'SAT', date: '17', active: false, dot: null },
+            ].map((item, idx) => (
+              <div key={idx} className="flex flex-col items-center">
+                <span className="text-[10px] md:text-xs font-bold text-zinc-400 mb-3 md:mb-4">{item.day}</span>
+                <div className={`w-12 h-14 md:w-16 md:h-20 rounded-full flex flex-col items-center justify-center relative cursor-pointer transition-transform hover:-translate-y-1 ${item.active ? 'bg-[#006699] shadow-lg shadow-[#006699]/30 drop-shadow-xl text-white' : 'bg-zinc-100 text-zinc-900'}`}>
+                  <span className="text-sm md:text-lg font-bold mt-1 md:mt-2">{item.date}</span>
+                  <div className="h-4 flex items-center space-x-0.5 md:space-x-1">
+                    {item.dot && <div className={`w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${item.dot}`} />}
+                    {item.dot2 && <div className={`w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${item.dot2}`} />}
                   </div>
                 </div>
-              )
-            })}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 pt-8 border-t border-zinc-50 flex items-center justify-between text-sm">
+             <span className="text-zinc-500">Weekly Completion</span>
+             <span className="font-bold text-[#047857]">85%</span>
           </div>
         </div>
+
 
         {/* Right: Goal Achievement & Distribution */}
         <div className="space-y-6">

@@ -7,16 +7,13 @@ export function DashboardView({ displayName }: { displayName: string }) {
         <div className="hidden md:flex justify-between items-center mb-10">
           <div>
             <h2 className="text-3xl font-bold text-zinc-900 tracking-tight">Welcome back, {displayName}</h2>
-            <p className="text-zinc-500 mt-1">12 quests waiting</p>
+          
           </div>
           <div className="flex items-center space-x-4">
             <span className="px-4 py-2 rounded-full bg-white border border-zinc-200 text-sm font-bold flex items-center shadow-sm text-zinc-800 tracking-wide">
               <span className="w-2 h-2 rounded-full bg-red-500 mr-2.5"></span>
               12 DAY STREAK
             </span>
-            <button className="w-10 h-10 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-600 hover:bg-zinc-200 transition-colors">
-              <div className="w-4 h-4 bg-zinc-400 rounded-full" />
-            </button>
           </div>
         </div>
 
@@ -27,10 +24,7 @@ export function DashboardView({ displayName }: { displayName: string }) {
             <Flame className="w-4 h-4 mr-2" />
             14 DAY STREAK
           </div>
-          <div className="flex flex-col items-center">
-            <span className="text-6xl font-black text-[#006699] tracking-tighter">842</span>
-            <span className="text-[11px] font-bold tracking-[0.15em] text-zinc-600 mt-2 uppercase">Total Impact Points</span>
-          </div>
+         
         </div>
         
         <div className="flex justify-between items-end mb-6 md:hidden">
@@ -115,20 +109,16 @@ export function DashboardView({ displayName }: { displayName: string }) {
           </div>
         </div>
 
+
+        {/* Quote */}
         <div className="mt-12 md:mt-20 text-center text-[13px] md:text-sm italic text-zinc-400 font-medium pb-8 md:pb-0">
           &quot;Small acts of kindness create ripples of change.&quot;
         </div>
 
-        <div className="mt-8 md:mt-20 flex flex-col items-center text-center pb-10">
-          <h1 className="text-4xl md:text-[3.5rem] font-bold tracking-tight text-zinc-900 leading-[1.1]">
-            You&apos;ve made <span className="text-indigo-600">12 people smile</span><br className="hidden md:block"/> today.
-          </h1>
-          <p className="mt-6 text-sm md:text-base text-zinc-500 md:max-w-xl leading-relaxed">
-            That&apos;s in addition to completing <span className="text-[#006699] font-bold">42 quests</span> this week. Keep going, {displayName}.
-          </p>
-        </div>
       </div>
-      
+    
+
+      {/* Recent Activity */}
       <div className="w-full lg:w-80 shrink-0 hidden lg:block">
         <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-900 mb-8">Recent Activity</h3>
         
@@ -173,10 +163,6 @@ export function DashboardView({ displayName }: { displayName: string }) {
             </div>
           </div>
         </div>
-        
-        <button className="w-full mt-12 bg-zinc-100 hover:bg-zinc-200 text-zinc-900 font-bold py-4 rounded-2xl transition-colors text-xs tracking-wide">
-          VIEW FULL HISTORY
-        </button>
       </div>
     </div>
   )
