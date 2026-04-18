@@ -1,8 +1,18 @@
 import { Flame, Users as UsersIcon, Trophy, Target } from "lucide-react"
 
-export function AnalyticsHistory() {
+export function AnalyticsView() {
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
+    <div className="w-full max-w-[1400px] mx-auto p-6 md:p-10 min-h-screen">
+      <div className="flex items-center justify-between w-full md:w-auto mb-8 md:mb-12 gap-5 py-4 md:py-0">
+        <h2 className="text-3xl font-bold tracking-tight text-zinc-900 hidden md:block">Analytics</h2>
+
+        <div className="md:hidden flex items-center justify-between w-full">
+          <h1 className="text-2xl font-bold tracking-tight">Analytics</h1>
+       
+        </div>
+      </div>
+
+      <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
       
       {/* ======================= */}
       {/* DESKTOP 4 CARDS (md+)   */}
@@ -181,6 +191,7 @@ export function AnalyticsHistory() {
           </div>
         </div>
 
+      </div>
       </div>
     </div>
   )
