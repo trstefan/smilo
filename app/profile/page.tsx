@@ -8,6 +8,7 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { DashboardView } from "@/components/profile/dashboard-view"
 import { AnalyticsView } from "@/components/profile/analytics-view"
 import { SuggestionsView } from "@/components/profile/suggestions-view"
+import { TasksView } from "@/components/profile/tasks-view"
 import { User } from "@supabase/supabase-js"
 
 // ==========================================
@@ -41,6 +42,10 @@ function ProfilePageContent() {
         <SuggestionsView />
       </div>
     )
+  }
+
+  if (activeTab === 'tasks') {
+    return <TasksView />
   }
 
   // Dashboard Fallback for 'dashboard' or 'requests' etc.

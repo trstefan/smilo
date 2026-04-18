@@ -71,17 +71,13 @@ function ProfileLayoutContent({ children }: { children: ReactNode }) {
             <BarChart2 className={`w-5 h-5 ${activeTab === 'analytics' || activeTab === 'history' ? 'text-[#4AC4E9]' : ''}`} />
             <span>Analytics</span>
           </Link>
-          <Link href="/profile?tab=team" className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'team' ? 'bg-[#1A1A1A] text-white' : 'text-zinc-500 hover:text-white'}`}>
-            <Users className={`w-5 h-5 ${activeTab === 'team' ? 'text-[#4AC4E9]' : ''}`} />
-            <span>Team</span>
+          <Link href="/profile?tab=tasks  " className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'tasks' ? 'bg-[#1A1A1A] text-white' : 'text-zinc-500 hover:text-white'}`}>
+            <Users className={`w-5 h-5 ${activeTab === 'tasks' ? 'text-[#4AC4E9]' : ''}`} />
+            <span>Tasks</span>
           </Link>
           <Link href="/profile?tab=suggestions" className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'projects' ? 'bg-[#1A1A1A] text-white' : 'text-zinc-500 hover:text-white'}`}>
             <FolderKanban className={`w-5 h-5 ${activeTab === 'projects' ? 'text-[#4AC4E9]' : ''}`} />
             <span>Suggestions</span>
-          </Link>
-          <Link href="/profile?tab=settings" className={`flex items-center space-x-3 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'settings' ? 'bg-[#1A1A1A] text-white' : 'text-zinc-500 hover:text-white'}`}>
-            <Settings className={`w-5 h-5 ${activeTab === 'settings' ? 'text-[#4AC4E9]' : ''}`} />
-            <span>Settings</span>
           </Link>
         </nav>
 
@@ -95,10 +91,6 @@ function ProfileLayoutContent({ children }: { children: ReactNode }) {
               <p className="text-xs text-zinc-500 mt-0.5">12 quests active</p>
             </div>
           </div>
-          <Link href="#" className="flex items-center space-x-3 text-zinc-500 hover:text-white px-4 py-2 text-sm font-medium transition-colors">
-            <User className="w-[18px] h-[18px]" />
-            <span>Profile</span>
-          </Link>
           <button onClick={handleLogout} className="w-full flex items-center space-x-3 text-zinc-500 hover:text-white px-4 py-2 text-sm font-medium transition-colors">
             <LogOut className="w-[18px] h-[18px]" />
             <span>Log Out</span>
@@ -142,21 +134,15 @@ function ProfileLayoutContent({ children }: { children: ReactNode }) {
           </Link>
 
           {/* Team */}
-          <Link href="/profile?tab=team" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'team' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
+          <Link href="/profile?tab=tasks" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'team' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
              <Users className="w-[22px] h-[22px] mb-1" />
-            <span className="text-[10px] font-semibold">Team</span>
+            <span className="text-[10px] font-semibold">Tasks</span>
           </Link>
           
           {/* Projects */}
-          <Link href="/profile?tab=projects" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'projects' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
+          <Link href="/profile?tab=suggestions" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'projects' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
              <FolderKanban className="w-[22px] h-[22px] mb-1" />
-            <span className="text-[10px] font-semibold">Projects</span>
-          </Link>
-
-          {/* Settings */}
-          <Link href="/profile?tab=settings" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'settings' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
-             <Settings className="w-[22px] h-[22px] mb-1" />
-            <span className="text-[10px] font-semibold">Settings</span>
+            <span className="text-[10px] font-semibold">Suggestions</span>
           </Link>
         </nav>
       </div>
