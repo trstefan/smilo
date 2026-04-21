@@ -105,7 +105,7 @@ export function RegisterForm({ onToggleView }: RegisterFormProps) {
         password,
         options: {
           data: {
-            displayName,
+            display_name: displayName,
           },
         },
       })

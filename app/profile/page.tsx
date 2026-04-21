@@ -11,25 +11,44 @@ import { SuggestionsView } from "@/components/profile/suggestions-view"
 import { TasksView } from "@/components/profile/tasks-view"
 import { User } from "@supabase/supabase-js"
 
+
+
+const supabase = createClient()
 // ==========================================
 // Main Switcher Component
 // ==========================================
 function ProfilePageContent() {
   const [user, setUser] = useState<User | null>(null)
-  const supabase = createClient()
+  const [displayName, setDisplayName] = useState<string>("")
+
   const searchParams = useSearchParams()
   
   const activeTab = (searchParams.get('tab') || 'dashboard') === 'history' ? 'analytics' : searchParams.get('tab') || 'dashboard'
 
-  useEffect(() => {
-    async function getUser() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) setUser(user)
-    }
-    getUser()
-  }, [supabase.auth])
+useEffect(() => {
+  async function getUser() {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      setUser(user)
 
-  const displayName = user?.user_metadata?.displayName || user?.email?.split('@')[0] || "User"
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('display_name')
+        .eq('id', user.id)
+        .single()
+
+      setDisplayName(
+        profile?.display_name || user.email?.split('@')[0] || "User"
+        
+      )
+      
+    }
+  }
+  getUser()
+
+}, [supabase])
+
+
 
   if (activeTab === 'analytics') {
     return <AnalyticsView />
