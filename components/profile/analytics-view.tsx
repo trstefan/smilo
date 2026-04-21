@@ -1,6 +1,83 @@
-import { Flame, Users as UsersIcon, Trophy, Target } from "lucide-react"
+"use client"
+
+import { useState } from "react"
+import { Flame, Users as UsersIcon, Trophy, Target, ChevronLeft, ChevronRight } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import Calendar, { CalendarTask } from "@/components/calendar"
+
+const MOCK_TASKS: CalendarTask[] = [
+  { id: '1', title: 'Morning Jog with Dad', date: new Date(2026, 3, 12), tag: 'Family' },
+  { id: '2', title: 'Coffee with Sarah', date: new Date(2026, 3, 13), tag: 'Friends' },
+  { id: '3', title: 'Help Neighbor with Groceries', date: new Date(2026, 3, 13), tag: 'Strangers' },
+  { id: '4', title: 'Team Sync Meeting', date: new Date(2026, 3, 14), tag: 'Colleagues' },
+  { id: '5', title: 'Family Dinner', date: new Date(2026, 3, 16), tag: 'Family' },
+  { id: '6', title: 'Gym Session', date: new Date(2026, 3, 18), tag: 'Friends' },
+  { id: '7', title: 'Volunteer at Shelter', date: new Date(2026, 3, 18), tag: 'Strangers' },
+  { id: '8', title: 'Submit Q2 Report', date: new Date(2026, 3, 20), tag: 'Colleagues' },
+];
+
+const TAG_COLOR_CLASSES: Record<string, string> = {
+  Family: "bg-[#006699]",
+  Friends: "bg-[#047857]",
+  Strangers: "bg-[#A855F7]",
+  Colleagues: "bg-[#059669]",
+};
 
 export function AnalyticsView() {
+  const [mobileWeekStart, setMobileWeekStart] = useState(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    const day = d.getDay(); // 0 is Sunday
+    const diff = d.getDate() - day;
+    return new Date(d.setDate(diff));
+  });
+
+  const [direction, setDirection] = useState(0);
+
+  const nextWeek = () => {
+    setDirection(1);
+    const next = new Date(mobileWeekStart);
+    next.setDate(next.getDate() + 7);
+    setMobileWeekStart(next);
+  };
+
+  const prevWeek = () => {
+    setDirection(-1);
+    const prev = new Date(mobileWeekStart);
+    prev.setDate(prev.getDate() - 7);
+    setMobileWeekStart(prev);
+  };
+
+  const nextMonth = () => {
+    setDirection(1);
+    const next = new Date(mobileWeekStart);
+    next.setMonth(next.getMonth() + 1);
+    // Snap to nearest Sunday
+    const day = next.getDay();
+    next.setDate(next.getDate() - day);
+    setMobileWeekStart(next);
+  };
+
+  const prevMonth = () => {
+    setDirection(-1);
+    const prev = new Date(mobileWeekStart);
+    prev.setMonth(prev.getMonth() - 1);
+    // Snap to nearest Sunday
+    const day = prev.getDay();
+    prev.setDate(prev.getDate() - day);
+    setMobileWeekStart(prev);
+  };
+
+  const handleDragEnd = (event: any, info: any) => {
+    const threshold = 50;
+    if (info.offset.x < -threshold) {
+      nextWeek();
+    } else if (info.offset.x > threshold) {
+      prevWeek();
+    }
+  };
+
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   return (
     <div className="w-full max-w-[1400px] mx-auto p-6 md:p-10 min-h-screen">
       <div className="flex items-center justify-between w-full md:w-auto mb-8 md:mb-12 gap-5 py-4 md:py-0">
@@ -91,39 +168,107 @@ export function AnalyticsView() {
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8 pb-20">
         
         {/* Left: Daily Activity Strip (Overview's Design, adapted for all views) */}
-        <div className="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-sm border border-zinc-100 flex flex-col justify-center">
-          <div className="flex justify-between items-end mb-8 md:mb-10">
-            <h3 className="text-lg font-bold text-zinc-900">Daily Activity</h3>
-            <span className="text-sm font-semibold text-[#006699] cursor-pointer">September</span>
+        {/* Desktop: Calendar View */}
+        <div className="hidden md:block">
+          <Calendar 
+            className="shadow-sm border border-zinc-100 rounded-[2.5rem]" 
+            maxWidth="max-w-none"
+            showSelectedDateInfo={false}
+            tasks={MOCK_TASKS}
+          />
+        </div>
+
+        {/* Mobile: Daily Activity Strip */}
+        <div className="md:hidden bg-white p-6 rounded-[2.5rem] shadow-sm border border-zinc-100 flex flex-col justify-center">
+          <div className="flex justify-between items-center mb-8">
+            <h3 className="text-lg font-bold text-zinc-900">Activity</h3>
+            
+            <div className="flex items-center space-x-4">
+              <button 
+                onClick={prevMonth}
+                className="p-1 rounded-full hover:bg-zinc-100 transition-colors"
+                aria-label="Previous month"
+              >
+                <ChevronLeft className="w-5 h-5 text-zinc-600" />
+              </button>
+              
+              <span className="text-sm font-bold text-[#006699] min-w-[100px] text-center">
+                {monthNames[mobileWeekStart.getMonth()]} {mobileWeekStart.getFullYear()}
+              </span>
+
+              <button 
+                onClick={nextMonth}
+                className="p-1 rounded-full hover:bg-zinc-100 transition-colors"
+                aria-label="Next month"
+              >
+                <ChevronRight className="w-5 h-5 text-zinc-600" />
+              </button>
+            </div>
           </div>
           
-          <div className="flex justify-between items-center px-1 md:px-4 relative z-0">
-            {[
-              { day: 'MON', date: '12', active: false, dot: 'bg-emerald-500' },
-              { day: 'TUE', date: '13', active: false, dot: 'bg-indigo-500', dot2: 'bg-purple-400' },
-              { day: 'WED', date: '14', active: true, dot: 'bg-white' },
-              { day: 'THU', date: '15', active: false, dot: null },
-              { day: 'FRI', date: '16', active: false, dot: 'bg-emerald-500' },
-              { day: 'SAT', date: '17', active: false, dot: null },
-            ].map((item, idx) => (
-              <div key={idx} className="flex flex-col items-center">
-                <span className="text-[10px] md:text-xs font-bold text-zinc-400 mb-3 md:mb-4">{item.day}</span>
-                <div className={`w-12 h-14 md:w-16 md:h-20 rounded-full flex flex-col items-center justify-center relative cursor-pointer transition-transform hover:-translate-y-1 ${item.active ? 'bg-[#006699] shadow-lg shadow-[#006699]/30 drop-shadow-xl text-white' : 'bg-zinc-100 text-zinc-900'}`}>
-                  <span className="text-sm md:text-lg font-bold mt-1 md:mt-2">{item.date}</span>
-                  <div className="h-4 flex items-center space-x-0.5 md:space-x-1">
-                    {item.dot && <div className={`w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${item.dot}`} />}
-                    {item.dot2 && <div className={`w-1 h-1 md:w-1.5 md:h-1.5 rounded-full ${item.dot2}`} />}
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="relative overflow-hidden h-24">
+            <AnimatePresence initial={false} custom={direction}>
+              <motion.div 
+                key={mobileWeekStart.toDateString()}
+                custom={direction}
+                variants={{
+                  enter: (direction: number) => ({
+                    x: direction > 0 ? '100%' : '-100%',
+                    opacity: 0
+                  }),
+                  center: {
+                    x: 0,
+                    opacity: 1
+                  },
+                  exit: (direction: number) => ({
+                    x: direction < 0 ? '100%' : '-100%',
+                    opacity: 0
+                  })
+                }}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { type: "spring", stiffness: 300, damping: 30 },
+                  opacity: { duration: 0.2 }
+                }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                onDragEnd={handleDragEnd}
+                className="flex justify-between items-center px-2 absolute inset-0 cursor-grab active:cursor-grabbing select-none w-full"
+              >
+                {Array.from({ length: 7 }).map((_, idx) => {
+                  const itemDate = new Date(mobileWeekStart);
+                  itemDate.setDate(mobileWeekStart.getDate() + idx);
+                  
+                  const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+                  const dayTasks = MOCK_TASKS.filter(t => t.date.toDateString() === itemDate.toDateString());
+                  const isToday = itemDate.toDateString() === new Date().toDateString();
+
+                  return (
+                    <div key={idx} className="flex flex-col items-center flex-1 min-w-0">
+                      <span className="text-[9px] font-bold text-zinc-400 mb-2">{dayNames[idx]}</span>
+                      <div className={`w-9 h-11 rounded-2xl flex flex-col items-center justify-center relative transition-all ${isToday ? 'bg-[#006699] shadow-lg shadow-[#006699]/30 text-white' : 'bg-zinc-50 text-zinc-900 border border-zinc-100'}`}>
+                        <span className="text-xs font-bold mt-0.5">{itemDate.getDate()}</span>
+                        <div className="h-3 flex items-center space-x-0.5">
+                          {dayTasks.slice(0, 3).map(task => (
+                            <div key={task.id} className={`w-1 h-1 rounded-full ${isToday ? 'bg-white' : TAG_COLOR_CLASSES[task.tag]}`} />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          <div className="mt-10 pt-8 border-t border-zinc-50 flex items-center justify-between text-sm">
-             <span className="text-zinc-500">Weekly Completion</span>
-             <span className="font-bold text-[#047857]">85%</span>
+          <div className="mt-8 pt-6 border-t border-zinc-50 flex items-center justify-between text-xs font-medium">
+             <span className="text-zinc-400">Week Overview</span>
+             <span className="text-[#047857]">You are on track!</span>
           </div>
         </div>
+
 
 
         {/* Right: Goal Achievement & Distribution */}
