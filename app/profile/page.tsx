@@ -1,87 +1,53 @@
-"use client"
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { DashboardView } from "@/components/profile/dashboard-view";
+import { AnalyticsView } from "@/components/profile/analytics-view";
+import { SuggestionsView } from "@/components/profile/suggestions-view";
+import { TasksView } from "@/components/profile/tasks-view";
 
-import { Flame, Bell, Search } from "lucide-react"
-import { useEffect, useState, Suspense } from "react"
-import { createClient } from "@/lib/supabase/client"
-import { useSearchParams, useRouter } from "next/navigation"
-
-import { DashboardView } from "@/components/profile/dashboard-view"
-import { AnalyticsView } from "@/components/profile/analytics-view"
-import { SuggestionsView } from "@/components/profile/suggestions-view"
-import { TasksView } from "@/components/profile/tasks-view"
-import { User } from "@supabase/supabase-js"
-
-
-
-const supabase = createClient()
-// ==========================================
-// Main Switcher Component
-// ==========================================
-function ProfilePageContent() {
-  const [user, setUser] = useState<User | null>(null)
-  const [displayName, setDisplayName] = useState<string>("")
-
-  const searchParams = useSearchParams()
+export default async function ProfilePage({ 
+  searchParams 
+}: { 
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }> 
+}) {
+  const supabase = await createClient();
+  const resolvedSearchParams = await searchParams;
   
-  const activeTab = (searchParams.get('tab') || 'dashboard') === 'history' ? 'analytics' : searchParams.get('tab') || 'dashboard'
-
-useEffect(() => {
-  async function getUser() {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user) {
-      setUser(user)
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('display_name')
-        .eq('id', user.id)
-        .single()
-
-      setDisplayName(
-        profile?.display_name || user.email?.split('@')[0] || "User"
-        
-      )
-      
-    }
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  
+  if (authError || !user) {
+    redirect("/sign-in-to-smilo");
   }
-  getUser()
 
-}, [supabase])
+  // Fetch profile display name server-side
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('display_name')
+    .eq('id', user.id)
+    .single();
 
-
+  const displayName = profile?.display_name || user.user_metadata?.displayName || user.email?.split('@')[0] || "User";
+  
+  // Extract tab from search params
+  const tabParam = resolvedSearchParams.tab;
+  const activeTab = (tabParam === 'history') ? 'analytics' : (tabParam || 'dashboard');
 
   if (activeTab === 'analytics') {
-    return <AnalyticsView />
+    return <AnalyticsView />;
   }
 
   if (activeTab === 'suggestions') {
     return (
       <div className="w-full h-full">
-        {/* Mobile secondary header could go here, or handled inside component */}
         <SuggestionsView />
       </div>
-    )
+    );
   }
 
   if (activeTab === 'tasks') {
-    return <TasksView />
+    return <TasksView />;
   }
 
-  // Dashboard Fallback for 'dashboard' or 'requests' etc.
-  return <DashboardView displayName={displayName} />
-}
-
-export default function ProfilePage() {
-  return (
-    <Suspense fallback={
-       <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center">
-         <div className="animate-pulse flex flex-col items-center">
-            <div className="h-8 w-32 bg-zinc-200 rounded mb-4"></div>
-            <div className="h-4 w-48 bg-zinc-200 rounded"></div>
-         </div>
-       </div>
-    }>
-      <ProfilePageContent />
-    </Suspense>
-  )
+  // Dashboard Fallback
+  return <DashboardView displayName={displayName} />;
 }

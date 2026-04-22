@@ -1,3 +1,4 @@
+"use client"
 import { useState } from "react"
 import {  Bookmark, X, ChevronRight, ChevronLeft, ChevronUp, ChevronDown, } from "lucide-react"
 
