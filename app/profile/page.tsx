@@ -49,5 +49,5 @@ export default async function ProfilePage({
   }
 
   // Dashboard Fallback
-  return <DashboardView displayName={displayName} />;
+  return <DashboardView displayName={displayName} userId={user.id} />;
 }
