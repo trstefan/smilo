@@ -22,11 +22,12 @@ export default async function ProfilePage({
   // Fetch profile display name server-side
   const { data: profile } = await supabase
     .from('profiles')
-    .select('display_name')
+    .select('display_name, streak_current')
     .eq('id', user.id)
     .single();
 
   const displayName = profile?.display_name || user.user_metadata?.displayName || user.email?.split('@')[0] || "User";
+  const currentStreak = profile?.streak_current;
   
   // Extract tab from search params
   const tabParam = resolvedSearchParams.tab;
@@ -49,5 +50,5 @@ export default async function ProfilePage({
   }
 
   // Dashboard Fallback
-  return <DashboardView displayName={displayName} userId={user.id} />;
+  return <DashboardView displayName={displayName} currentStreak={currentStreak} userId={user.id} />;
 }

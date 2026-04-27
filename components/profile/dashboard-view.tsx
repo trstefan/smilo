@@ -3,35 +3,11 @@ import TaskContainer from "../TaskContainer"
 import { createClient } from "@/lib/supabase/server"
 import { RecentActivity } from "./recent-activity"
 
-export async function DashboardView({ displayName, userId }: { displayName: string, userId?: string }) {
-  let fetchedTasks = undefined;
+export async function DashboardView({ displayName, currentStreak, userId }: { displayName: string, currentStreak?: number, userId?: string }) {
   let recentActivity = [];
 
   if (userId) {
     const supabase = await createClient();
-    const { data } = await supabase
-      .from('priority_task_list')
-      .select('*, global_tasks(*)')
-      .eq('user_id', userId);
-      
-    if (data && data.length > 0) {
-      // Pick 3 random
-      const shuffled = data.sort(() => 0.5 - Math.random());
-      const selected = shuffled.slice(0, 3);
-      
-      fetchedTasks = selected.map(item => {
-         const t = item.global_tasks;
-         return {
-           id: item.task_id,
-           title: t?.task_name || 'Unknown',
-           description: t?.description || '',
-           category: t?.category || 'Default',
-           resetHours: 24,
-           completed: false
-         }
-      });
-    }
-
     const { data: activityData } = await supabase
       .from('completed_task_list')
       .select('*, global_tasks(*)')
@@ -51,10 +27,10 @@ export async function DashboardView({ displayName, userId }: { displayName: stri
           
           </div>
           <div className="flex items-center space-x-4">
-            <span className="px-4 py-2 rounded-full bg-white border border-zinc-200 text-sm font-bold flex items-center shadow-sm text-zinc-800 tracking-wide">
-              <span className="w-2 h-2 rounded-full bg-red-500 mr-2.5"></span>
-              12 DAY STREAK
-            </span>
+            <div className="mt-6 mb-8 px-5 py-2 rounded-full bg-[#6EE7B7] text-[#047857] text-sm font-bold flex items-center shadow-sm tracking-wide">
+            <Flame className="w-4 h-4 mr-2" />
+            {currentStreak} DAY STREAK
+          </div>
           </div>
         </div>
 
@@ -63,7 +39,7 @@ export async function DashboardView({ displayName, userId }: { displayName: stri
           <p className="text-zinc-500 mt-1">Ready for today&apos;s Skyline challenge?</p>
           <div className="mt-6 mb-8 px-5 py-2 rounded-full bg-[#6EE7B7] text-[#047857] text-sm font-bold flex items-center shadow-sm tracking-wide">
             <Flame className="w-4 h-4 mr-2" />
-            14 DAY STREAK
+            {currentStreak} DAY STREAK
           </div>
          
         </div>
@@ -72,7 +48,8 @@ export async function DashboardView({ displayName, userId }: { displayName: stri
             <h3 className="text-lg font-bold text-zinc-900">Active Quests</h3>
         </div>
 
-        <TaskContainer tasks={fetchedTasks} />
+        <TaskContainer />
+
 
 
         {/* Quote */}

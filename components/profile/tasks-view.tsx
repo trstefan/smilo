@@ -76,37 +76,49 @@ export function TasksView() {
   const [priorityTotalCount, setPriorityTotalCount] = useState(0)
   const [userId, setUserId] = useState<string | null>(null)
   const [bookmarkedTaskIds, setBookmarkedTaskIds] = useState<Set<string>>(new Set())
+  const [completedTaskIds, setCompletedTaskIds] = useState<Set<string>>(new Set())
 
 
 
   const fetchTasks = useCallback(async () => {
+    if (!userId) return
     setIsLoading(true)
     try {
-      let query = supabase
-        .from('global_tasks')
-        .select('*', { count: 'exact' })
-
-      if (activeCategory !== "All") {
-        query = query.eq('category', activeCategory)
-      }
-
       const from = (currentPage - 1) * ITEMS_PER_PAGE
-      const to = from + ITEMS_PER_PAGE - 1
 
-      const { data, count, error } = await query
-        .order('created_at', { ascending: false })
-        .range(from, to)
+      const { data, error } = await supabase.rpc('get_tasks_with_completion_status', {
+        p_user_id: userId,
+        p_category: activeCategory,
+        p_limit: ITEMS_PER_PAGE,
+        p_offset: from
+      })
 
       if (error) throw error
 
       setTasks(data || [])
-      setTotalCount(count || 0)
+      
+      // Update the total count from the first row if available
+      if (data && data.length > 0) {
+        setTotalCount(Number(data[0].total_count))
+        
+        // Sync the completedTaskIds set for other UI elements
+        setCompletedTaskIds(prev => {
+          const next = new Set(prev)
+          data.forEach((t: any) => {
+            if (t.is_completed) next.add(t.id)
+            else next.delete(t.id)
+          })
+          return next
+        })
+      } else {
+        setTotalCount(0)
+      }
     } catch (error) {
       console.error("Error fetching tasks:", error)
     } finally {
       setIsLoading(false)
     }
-  }, [activeCategory, currentPage, supabase])
+  }, [activeCategory, currentPage, supabase, userId])
 
   const fetchAllBookmarkedIds = useCallback(async (uid: string) => {
     try {
@@ -121,6 +133,22 @@ export function TasksView() {
       setBookmarkedTaskIds(ids)
     } catch (error) {
       console.error("Error fetching bookmarked IDs:", error)
+    }
+  }, [supabase])
+
+  const fetchCompletedIds = useCallback(async (uid: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('completed_task_list')
+        .select('task_id')
+        .eq('user_id', uid)
+
+      if (error) throw error
+      
+      const ids = new Set(data?.map(item => item.task_id) || [])
+      setCompletedTaskIds(ids)
+    } catch (error) {
+      console.error("Error fetching completed IDs:", error)
     }
   }, [supabase])
 
@@ -156,10 +184,11 @@ export function TasksView() {
         setUserId(user.id)
         fetchAllBookmarkedIds(user.id)
         fetchPriorityTasks(user.id)
+        fetchCompletedIds(user.id)
       }
     }
     getUser()
-  }, [supabase, fetchPriorityTasks, fetchAllBookmarkedIds])
+  }, [supabase, fetchPriorityTasks, fetchAllBookmarkedIds, fetchCompletedIds])
 
   useEffect(() => {
     fetchTasks()
@@ -228,6 +257,7 @@ export function TasksView() {
       // Refresh data
       fetchAllBookmarkedIds(userId)
       fetchPriorityTasks(userId)
+      fetchCompletedIds(userId)
     } catch (error) {
       console.error("Error toggling bookmark:", error)
     }
@@ -317,8 +347,12 @@ export function TasksView() {
               ) : tasks.length > 0 ? (
                 tasks.map(task => {
                   const config = CATEGORY_CONFIG[task.category] || CATEGORY_CONFIG.Default;
-                  return (
-                    <div key={task.id} className="bg-zinc-50 rounded-3xl p-6 border border-zinc-100">
+                  const isCompleted = completedTaskIds.has(task.id)
+                    return (
+                      <div 
+                        key={task.id} 
+                        className={`${isCompleted ? 'bg-zinc-200/50' : 'bg-zinc-50'} rounded-3xl p-6 border border-zinc-100 transition-colors`}
+                      >
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex gap-3 items-center">
                           <span className={`px-2.5 py-1 text-[10px] uppercase font-bold tracking-wider rounded-full ${config.badgeColor}`}>
@@ -326,11 +360,13 @@ export function TasksView() {
                           </span>
                         </div>
                         <Bookmark 
-                          onClick={() => toggleBookmark(task.id)}
+                          onClick={() => !isCompleted && toggleBookmark(task.id)}
                           className={`w-6 h-6 cursor-pointer transition-all active:scale-90 ${
-                            bookmarkedTaskIds.has(task.id) 
-                              ? "text-[#006699] fill-[#006699]" 
-                              : "text-zinc-400 hover:text-zinc-600"
+                            isCompleted 
+                              ? "text-zinc-300 cursor-not-allowed"
+                              : bookmarkedTaskIds.has(task.id) 
+                                ? "text-[#006699] fill-[#006699]" 
+                                : "text-zinc-400 hover:text-zinc-600"
                           }`} 
                         />
                       </div>
@@ -353,15 +389,16 @@ export function TasksView() {
               ) : tasks.length > 0 ? (
                 tasks.map((task, idx) => {
                   const config = CATEGORY_CONFIG[task.category] || CATEGORY_CONFIG.Default;
-                  const isLarge = idx === 0 && currentPage === 1; // Make first item large on first page for variety
-                  
-                  return (
-                    <div 
-                      key={task.id} 
-                      className={`bg-zinc-50/80 rounded-3xl p-6 md:p-8 flex flex-col transition-all hover:bg-zinc-100 ${
-                        isLarge ? "lg:col-span-2 flex-row items-center gap-8" : ""
-                      }`}
-                    >
+                  const isCompleted = completedTaskIds.has(task.id)
+                  const isLarge = idx === 0 && currentPage === 1 && !isCompleted; // Only make large if not completed
+                    
+                    return (
+                      <div 
+                        key={task.id} 
+                        className={`${isCompleted ? 'bg-zinc-200/50' : 'bg-zinc-50/80'} rounded-3xl p-6 md:p-8 flex flex-col transition-all ${!isCompleted ? 'hover:bg-zinc-100' : ''} ${
+                          isLarge ? "lg:col-span-2 flex-row items-center gap-8" : ""
+                        }`}
+                      >
                       {isLarge ? (
                         <>
                           <div className="w-32 h-32 shrink-0 bg-white rounded-full flex items-center justify-center shadow-sm text-5xl">
@@ -370,11 +407,13 @@ export function TasksView() {
                           <div className="flex-1 flex flex-col relative w-full h-full">
                              <div className="absolute top-0 right-0">
                                <Bookmark 
-                                 onClick={() => toggleBookmark(task.id)}
+                                 onClick={() => !isCompleted && toggleBookmark(task.id)}
                                  className={`w-6 h-6 cursor-pointer transition-all active:scale-90 ${
-                                   bookmarkedTaskIds.has(task.id) 
-                                     ? "text-[#006699] fill-[#006699]" 
-                                     : "text-zinc-400 hover:text-zinc-600"
+                                   isCompleted 
+                                     ? "text-zinc-300 cursor-not-allowed"
+                                     : bookmarkedTaskIds.has(task.id) 
+                                       ? "text-[#006699] fill-[#006699]" 
+                                       : "text-zinc-400 hover:text-zinc-600"
                                  }`} 
                                />
                              </div>
@@ -393,11 +432,13 @@ export function TasksView() {
                               {config.icon}
                             </div>
                             <Bookmark 
-                              onClick={() => toggleBookmark(task.id)}
+                              onClick={() => !isCompleted && toggleBookmark(task.id)}
                               className={`w-6 h-6 cursor-pointer transition-all active:scale-90 ${
-                                bookmarkedTaskIds.has(task.id) 
-                                  ? "text-[#006699] fill-[#006699]" 
-                                  : "text-zinc-400 hover:text-zinc-600"
+                                isCompleted 
+                                  ? "text-zinc-300 cursor-not-allowed"
+                                  : bookmarkedTaskIds.has(task.id) 
+                                    ? "text-[#006699] fill-[#006699]" 
+                                    : "text-zinc-400 hover:text-zinc-600"
                               }`} 
                             />
                           </div>
@@ -457,13 +498,23 @@ export function TasksView() {
                      <Loader2 className="w-6 h-6 text-[#006699] animate-spin" />
                    </div>
                  ) : priorityTasks.length > 0 ? (
-                   priorityTasks.map(item => {
+                    [...priorityTasks]
+                      .sort((a, b) => {
+                        const aCompleted = completedTaskIds.has(a.task_id)
+                        const bCompleted = completedTaskIds.has(b.task_id)
+                        return aCompleted === bCompleted ? 0 : aCompleted ? 1 : -1
+                      })
+                      .map(item => {
                      const task = item.global_tasks;
                      if (!task) return null;
                      const config = CATEGORY_CONFIG[task.category] || CATEGORY_CONFIG.Default;
-                     
-                     return (
-                       <div key={item.id} className="bg-zinc-50 rounded-2xl p-4 flex items-center gap-4 group animate-in fade-in slide-in-from-right-2 duration-300">
+                        const isCompleted = completedTaskIds.has(item.task_id)
+                        
+                        return (
+                          <div 
+                            key={item.id} 
+                            className={`${isCompleted ? 'bg-zinc-200/50' : 'bg-zinc-50'} rounded-2xl p-4 flex items-center gap-4 group animate-in fade-in slide-in-from-right-2 duration-300 transition-colors`}
+                          >
                           <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm text-xl shrink-0">
                             {config.icon}
                           </div>

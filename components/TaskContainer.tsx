@@ -1,39 +1,40 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Clock, CheckCircle2 } from 'lucide-react';
+import { Clock, CheckCircle2, Loader2 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 interface Task {
-  id: string;
+  id: string; // row id in user_active_tasks
+  task_id: string; // global_task id
   title: string;
   description: string;
   category: string;
-  resetHours: number;
+  resets_at: string;
   completed: boolean;
-  completedAt?: number;
+  completed_at?: string;
+  slot: number;
 }
 
 interface TaskCardProps {
   task: Task;
-  onComplete: (id: string) => void;
+  onComplete: (task: Task) => void;
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, onComplete }) => {
   const [timeRemaining, setTimeRemaining] = useState<string>('');
 
   useEffect(() => {
-    if (!task.completed || !task.completedAt) return;
-
     const updateTimer = () => {
-      const now = Date.now();
-      const resetTime = task.completedAt! + task.resetHours * 60 * 60 * 1000;
+      const now = new Date().getTime();
+      const resetTime = new Date(task.resets_at).getTime();
       const remaining = resetTime - now;
 
       if (remaining <= 0) {
-        setTimeRemaining('Ready to reset');
+        setTimeRemaining('Resetting...');
         return;
       }
 
@@ -48,14 +49,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onComplete }) => {
     const interval = setInterval(updateTimer, 1000);
 
     return () => clearInterval(interval);
-  }, [task.completed, task.completedAt, task.resetHours]);
+  }, [task.resets_at]);
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
-      'Health': 'bg-emerald-100 text-emerald-700 border-emerald-200',
-      'Work': 'bg-blue-100 text-blue-700 border-blue-200',
-      'Personal': 'bg-purple-100 text-purple-700 border-purple-200',
-      'Learning': 'bg-orange-100 text-orange-700 border-orange-200',
       'Family': 'bg-emerald-100 text-emerald-700 border-emerald-200',
       'Friends': 'bg-blue-100 text-blue-700 border-blue-200',
       'Strangers': 'bg-purple-100 text-purple-700 border-purple-200',
@@ -66,10 +63,6 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onComplete }) => {
 
   const getCategoryIcon = (category: string) => {
     const icons: Record<string, string> = {
-      'Health': '🏃‍♂️',
-      'Work': '💼',
-      'Personal': '🧘',
-      'Learning': '📚',
       'Family': '🏠',
       'Friends': '🤝',
       'Strangers': '🌍',
@@ -110,10 +103,12 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onComplete }) => {
           {task.description}
         </CardDescription>
         
-        <div className="mt-4 flex items-center gap-2 text-xs font-bold text-zinc-400 uppercase tracking-wide">
-           <Clock className="h-3.5 w-3.5" />
-           Resets in {task.resetHours}h
-        </div>
+        {task.completed && (
+          <div className="mt-4 flex items-center gap-2 text-xs font-bold text-zinc-400 uppercase tracking-wide">
+             <Clock className="h-3.5 w-3.5" />
+             Resets {new Date(task.resets_at) > new Date() ? `in ${timeRemaining}` : 'Soon'}
+          </div>
+        )}
       </CardContent>
       
       <CardFooter className="pt-4 border-t border-zinc-100/80 mt-auto bg-zinc-50/50">
@@ -126,10 +121,10 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onComplete }) => {
           </div>
         ) : (
           <Button 
-            onClick={() => onComplete(task.id)} 
+            onClick={() => onComplete(task)} 
             className="w-full bg-[#006699] hover:bg-[#005580] text-white font-bold py-5 rounded-xl transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
           >
-            Complete Quest
+            Mark as done
           </Button>
         )}
       </CardFooter>
@@ -138,71 +133,109 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onComplete }) => {
 };
 
 interface TaskContainerProps {
-  tasks?: Task[];
+  activeTasks?: Task[];
 }
 
-const TaskContainer: React.FC<TaskContainerProps> = ({ tasks: initialTasks }) => {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks && initialTasks.length > 0 ? initialTasks : [
-    {
-      id: '1',
-      title: 'Daily Exercise',
-      description: 'Complete 30 minutes of cardio or strength training to maintain your fitness goals.',
-      category: 'Health',
-      resetHours: 24,
-      completed: false,
-    },
-    {
-      id: '2',
-      title: 'Project Review',
-      description: 'Review and update project documentation, check team progress, and plan next sprint.',
-      category: 'Work',
-      resetHours: 48,
-      completed: false,
-    },
-    {
-      id: '3',
-      title: 'Learn New Skill',
-      description: 'Dedicate time to learning a new programming language or framework through online courses.',
-      category: 'Learning',
-      resetHours: 72,
-      completed: false,
-    },
-  ]);
+const TaskContainer: React.FC<TaskContainerProps> = ({ activeTasks: initialActiveTasks }) => {
+  const [activeTasks, setActiveTasks] = useState<Task[]>(initialActiveTasks || []);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
+
+  const fetchActiveTasks = useCallback(async (userId: string) => {
+    const { data, error } = await supabase
+      .from('user_active_tasks')
+      .select('*, global_tasks(*)')
+      .eq('user_id', userId)
+      .order('slot', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching active tasks:', error);
+      return;
+    }
+
+    if (data) {
+      const mappedTasks: Task[] = data.map((row: any) => ({
+        id: row.id,
+        task_id: row.task_id,
+        title: row.global_tasks?.task_name || 'Unknown Task',
+        description: row.global_tasks?.description || '',
+        category: row.global_tasks?.category || 'Other',
+        resets_at: row.resets_at,
+        completed: row.completed,
+        completed_at: row.completed_at,
+        slot: row.slot
+      }));
+      setActiveTasks(mappedTasks);
+    }
+  }, [supabase]);
+
+  const initTasks = useCallback(async () => {
+    setLoading(true);
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (user) {
+      // 1. Assign tasks if needed
+      await supabase.rpc('assign_tasks_to_user', { p_user_id: user.id });
+      
+      // 2. Fetch the 3 active tasks
+      await fetchActiveTasks(user.id);
+    }
+    setLoading(false);
+  }, [supabase, fetchActiveTasks]);
 
   useEffect(() => {
-    const checkResets = () => {
-      setTasks(prevTasks =>
-        prevTasks.map(task => {
-          if (task.completed && task.completedAt) {
-            const now = Date.now();
-            const resetTime = task.completedAt + task.resetHours * 60 * 60 * 1000;
-            if (now >= resetTime) {
-              return { ...task, completed: false, completedAt: undefined };
-            }
-          }
-          return task;
-        })
-      );
-    };
+    initTasks();
+  }, [initTasks]);
 
-    const interval = setInterval(checkResets, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  const handleComplete = async (task: Task) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
 
-  const handleComplete = (id: string) => {
-    setTasks(prevTasks =>
-      prevTasks.map(task =>
-        task.id === id
-          ? { ...task, completed: true, completedAt: Date.now() }
-          : task
-      )
-    );
+    // 1. Update user_active_tasks setting completed = true and completed_at = now()
+    const { error: updateError } = await supabase
+      .from('user_active_tasks')
+      .update({ 
+        completed: true, 
+        completed_at: new Date().toISOString() 
+      })
+      .eq('id', task.id);
+
+    if (updateError) {
+      console.error('Error updating task:', updateError);
+      return;
+    }
+
+    // 2. Insert into completed_task_list
+    const { error: insertError } = await supabase
+      .from('completed_task_list')
+      .insert({ 
+        user_id: user.id, 
+        task_id: task.task_id 
+      });
+
+    if (insertError) {
+      console.error('Error recording completed task:', insertError);
+    }
+
+    // 3. Re-call assign_tasks_to_user to refill any eligible slots
+    await supabase.rpc('assign_tasks_to_user', { p_user_id: user.id });
+
+    // 4. Refresh the active tasks
+    await fetchActiveTasks(user.id);
   };
+
+  if (loading) {
+    return (
+      <div className="w-full flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-[#006699]" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-        {tasks.map(task => (
+        {activeTasks.map(task => (
           <TaskCard key={task.id} task={task} onComplete={handleComplete} />
         ))}
       </div>
@@ -210,4 +243,6 @@ const TaskContainer: React.FC<TaskContainerProps> = ({ tasks: initialTasks }) =>
   );
 };
 
+
 export default TaskContainer;
+
