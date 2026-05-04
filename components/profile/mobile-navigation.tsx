@@ -1,49 +1,92 @@
 "use client"
 
-import { LayoutDashboard, BarChart2, Users, FolderKanban, Menu } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { 
+  SquaresFour, 
+  ChartBar, 
+  Users, 
+  FolderOpen, 
+  List 
+} from "@phosphor-icons/react";
 
 export function MobileNavigation() {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'dashboard';
 
+  const navItems = [
+    { 
+      id: 'dashboard', 
+      label: 'Dashboard', 
+      href: '/profile?tab=dashboard', 
+      icon: SquaresFour, 
+      isActive: activeTab === 'dashboard'
+    },
+    { 
+      id: 'analytics', 
+      label: 'Analytics', 
+      href: '/profile?tab=analytics', 
+      icon: ChartBar, 
+      isActive: activeTab === 'analytics' || activeTab === 'history'
+    },
+    { 
+      id: 'tasks', 
+      label: 'Tasks', 
+      href: '/profile?tab=tasks', 
+      icon: Users, 
+      isActive: activeTab === 'tasks'
+    },
+    { 
+      id: 'suggestions', 
+      label: 'Suggestions', 
+      href: '/profile?tab=suggestions', 
+      icon: FolderOpen, 
+      isActive: activeTab === 'suggestions' || activeTab === 'projects'
+    },
+  ];
+
   return (
     <>
       {/* Mobile Top Navigation */}
-      <header className="md:hidden flex items-center justify-between px-6 py-5 bg-[#FAFAFA]/80 backdrop-blur-md sticky top-0 z-10">
+      <header className="md:hidden flex items-center justify-between px-6 py-5 bg-[#131316]/90 backdrop-blur-md sticky top-0 z-10 text-white border-b border-white/5">
         <div className="space-x-2.5">
-          <h1 className="text-xl font-bold tracking-tight">SMILO.</h1>
+          <h1 className="text-xl font-bold tracking-tight">SMILO<span className="text-[#4AC4E9]">.</span></h1>
         </div>
         <div className="flex items-center space-x-3">
-          <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm border border-zinc-100 text-zinc-600 transition-transform active:scale-95">
-            <Menu className="w-[18px] h-[18px]" />
+          <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#1A1A1A] border border-white/5 text-zinc-400 hover:text-white transition-transform active:scale-95">
+            <List className="w-5 h-5" />
           </button>
         </div>
       </header>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-zinc-100 flex items-center justify-around z-50 shadow-[0_-4px_24px_rgba(0,0,0,0.02)] pt-2 pb-safe-offset-2 pb-4 px-2">
-        <Link href="/profile?tab=dashboard" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'dashboard' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
-          <LayoutDashboard className="w-[22px] h-[22px] mb-1" />
-          <span className="text-[10px] font-semibold">Dashboard</span>
-        </Link>
-
-        <Link href="/profile?tab=analytics" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'analytics' || activeTab === 'history' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
-          <BarChart2 className="w-[22px] h-[22px] mb-1" />
-          <span className="text-[10px] font-semibold">Analytics</span>
-        </Link>
-
-        <Link href="/profile?tab=tasks" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'tasks' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
-          <Users className="w-[22px] h-[22px] mb-1" />
-          <span className="text-[10px] font-semibold">Tasks</span>
-        </Link>
-        
-        <Link href="/profile?tab=suggestions" className={`flex flex-col items-center justify-center p-2 rounded-2xl w-16 h-14 transition-colors ${activeTab === 'suggestions' || activeTab === 'projects' ? 'bg-[#111111] text-white' : 'text-zinc-400 hover:text-zinc-600'}`}>
-          <FolderKanban className="w-[22px] h-[22px] mb-1" />
-          <span className="text-[10px] font-semibold">Suggestions</span>
-        </Link>
-      </nav>
+      <div className="md:hidden fixed bottom-6 left-0 right-0 z-50 px-4 pointer-events-none">
+        <nav className="bg-[#131316] rounded-[24px] flex items-center justify-between p-2 shadow-2xl border border-white/5 w-full max-w-[360px] mx-auto pointer-events-auto">
+          {navItems.map((item) => (
+            <Link 
+              key={item.id}
+              href={item.href} 
+              className={`flex items-center justify-center rounded-[18px] transition-all duration-300 ease-in-out ${
+                item.isActive 
+                  ? 'bg-[#28282C] h-14 px-5' 
+                  : 'h-14 w-14 hover:bg-white/5'
+              }`}
+            >
+              <item.icon 
+                className={`w-[22px] h-[22px] shrink-0 transition-colors duration-300 ${item.isActive ? 'text-[#A855F7]' : 'text-zinc-500'}`} 
+                weight={item.isActive ? "fill" : "regular"} 
+              />
+              <span 
+                className={`font-medium text-white whitespace-nowrap transition-all duration-300 ease-in-out overflow-hidden ${
+                  item.isActive ? 'max-w-[120px] ml-2.5 opacity-100 text-[15px]' : 'max-w-0 opacity-0 ml-0 text-[0px]'
+                }`}
+              >
+                {item.label}
+              </span>
+            </Link>
+          ))}
+        </nav>
+      </div>
     </>
   );
 }

@@ -1,107 +1,86 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowUpRight, Bot } from "lucide-react";
+import { Bot, ArrowRight, Twitter, Linkedin, Facebook, Instagram } from "lucide-react";
+import localFont from "next/font/local"
 
-const footerLinks = {
-  product: [
-    { label: "Technology", href: "#" },
-    { label: "Safety", href: "#" },
-    { label: "Specifications", href: "#" },
-    { label: "Pricing", href: "#" },
-  ],
-  company: [
-    { label: "About", href: "#" },
-    { label: "Careers", href: "#" },
-    { label: "Press", href: "#" },
-    { label: "Blog", href: "#" },
-  ],
-  resources: [
-    { label: "Documentation", href: "#" },
-    { label: "Support", href: "#" },
-    { label: "API", href: "#" },
-    { label: "Partners", href: "#" },
-  ],
-  legal: [
-    { label: "Privacy", href: "#" },
-    { label: "Terms", href: "#" },
-    { label: "Compliance", href: "#" },
-    { label: "Patents", href: "#" },
-  ],
-};
+const mondaFont = localFont({
+  src: "../public/fonts/monda-font/monda.otf",
+  display: "swap",
+})
+
+const navLinks = [
+  { label: "About", href: "#" },
+  { label: "Features", href: "#" },
+  { label: "How It Works", href: "#" },
+  { label: "Pricing", href: "#" },
+  { label: "Support", href: "#" },
+];
 
 export function Footer() {
   return (
-    <footer className="bg-black text-white border ">
-      {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-12 mb-16">
-          {/* Logo & Description */}
-          <div className="col-span-2">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center">
-                <Bot className="w-5 h-5 text-black" />
-              </div>
-              <span className="text-xl font-black tracking-tight">SMILO</span>
-            </div>
-            <p className="text-white/40 text-sm leading-relaxed mb-6 max-w-xs">
-              Making kindness a daily habit
-            </p>
-            <div className="flex gap-4">
-              {["X", "Li", "Gh", "Yt"].map((social) => (
-                <a
-                  key={social}
-                  href="#"
-                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/50 hover:bg-white/10 hover:text-white transition-all text-xs font-bold"
-                >
-                  {social}
-                </a>
-              ))}
-            </div>
+    <footer className="bg-black text-white py-16 px-6 overflow-hidden">
+      <div className="max-w-7xl mx-auto flex flex-col items-center">
+        {/* Logo */}
+        <div         
+          className="flex items-center gap-2 mb-8"
+        >
+          <span className={`text-2xl font-semibold tracking-widest text-white ${mondaFont.className}`}>smilo</span>
+        </div>
+
+        {/* Hero Content */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1 }}
+          className="text-center mb-8"
+        >
+          <h2 className="text-4xl md:text-6xl font-serif italic mb-6 max-w-4xl mx-auto leading-[1.1]">
+            Make Kindness a <br /> Daily Habit
+          </h2>
+          <p className="text-white/50 text-base md:text-lg max-w-2xl mx-auto mb-8">
+            Join thousands of people spreading positivity and building 
+            stronger communities through small, meaningful gestures.
+          </p>
+          
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-[#C3FF4D] text-black px-8 py-4 rounded-full font-bold flex items-center gap-2 mx-auto transition-colors hover:bg-[#b2f03d]"
+          >
+            Get Started
+            <ArrowRight size={20} />
+          </motion.button>
+        </motion.div>
+
+        {/* Navigation */}
+       
+        {/* Bottom Bar */}
+        <div className="w-full pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="text-white/40 text-sm font-medium order-2 md:order-1">
+            By Stefan
           </div>
 
-          {/* Links */}
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
-              <h4 className="text-xs font-black uppercase tracking-[0.2em] text-white/30 mb-6">
-                {category}
-              </h4>
-              <ul className="space-y-4">
-                {links.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-white/60 hover:text-white transition-colors text-sm"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+          <div className="flex items-center gap-6 order-1 md:order-2">
+            <a href="#" className="text-white/40 hover:text-[#C3FF4D] transition-colors">
+              <Twitter size={18} />
+            </a>
+            <a href="#" className="text-white/40 hover:text-[#C3FF4D] transition-colors">
+              <Facebook size={18} />
+            </a>
+            <a href="#" className="text-white/40 hover:text-[#C3FF4D] transition-colors">
+              <Linkedin size={18} />
+            </a>
+            <a href="#" className="text-white/40 hover:text-[#C3FF4D] transition-colors">
+              <Instagram size={18} />
+            </a>
+          </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-white/30 text-xs">
-            © 2026 Smilo. All rights reserved.
-          </p>
+          <div className="text-white/40 text-sm font-medium order-3">
+            Powered by Smilo
+          </div>
         </div>
-      </div>
-
-      {/* Giant Logo Background */}
-      <div className="relative overflow-hidden py-12">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-center"
-        >
-          <span className="text-[20vw] font-black tracking-tighter text-pink-500 leading-none select-none">
-            SMILO
-          </span>
-        </motion.div>
       </div>
     </footer>
   );
