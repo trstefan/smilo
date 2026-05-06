@@ -4,50 +4,14 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import localFont from "next/font/local"
 
-const IconHeart = () => (
-  <svg viewBox="0 0 100 100" className="w-[85%] h-[85%] m-auto fill-current">
-    <path d="M50 82.5 C35 72.5, 10 55, 10 34 A19 19 0 0 1 50 27.5 A19 19 0 0 1 90 34 C90 55, 65 72.5, 50 82.5 Z" />
-  </svg>
-);
-
-const IconHouse = () => (
-  <svg viewBox="0 0 100 100" className="w-[85%] h-[85%] m-auto fill-current">
-    <path d="M50 15 L85 45 V85 H15 V45 Z" />
-  </svg>
-);
-
-const IconAsterisk = () => (
-  <svg viewBox="0 0 100 100" className="w-[85%] h-[85%] m-auto fill-current">
-    <g transform="translate(50, 50)">
-      <rect x="-10" y="-38" width="20" height="76" rx="10" />
-      <rect x="-10" y="-38" width="20" height="76" rx="10" transform="rotate(45)" />
-      <rect x="-10" y="-38" width="20" height="76" rx="10" transform="rotate(90)" />
-      <rect x="-10" y="-38" width="20" height="76" rx="10" transform="rotate(135)" />
-    </g>
-  </svg>
-);
-
-const IconGift = () => (
-  <svg viewBox="0 0 100 100" className="w-[85%] h-[85%] m-auto fill-current">
-    <rect x="17" y="52" width="66" height="40" rx="4" />
-    <rect x="12" y="38" width="76" height="16" rx="4" />
-    <rect x="44" y="38" width="12" height="54" rx="3" />
-    <path d="M50 37 C50 37 35 25 32 17 C29 9 38 5 43 11 C47 16 50 25 50 25 C50 25 53 16 57 11 C62 5 71 9 68 17 C65 25 50 37 50 37 Z" />
-  </svg>
-);
-
-const IconStar = () => (
-  <svg viewBox="0 0 100 100" className="w-[85%] h-[85%] m-auto fill-current">
-    <path d="M50 10 L61 38 L92 38 L67 56 L76 84 L50 67 L24 84 L33 56 L8 38 L39 38 Z" />
-  </svg>
-);
+import { Heart, House, Star, Gift, Asterisk } from "@phosphor-icons/react"
 
 const symbols = [
-  <IconHeart key="1" />,
-  <IconHouse key="2" />,
-  <IconStar key="3" />,
-  <IconGift key="4" />,
-  <IconAsterisk key="5" />,
+  <Heart key="1" size={32} weight="fill" />,
+  <House key="2" size={32} weight="fill" />,
+  <Star key="3" size={32} weight="fill" />,
+  <Gift key="4" size={32} weight="fill" />,
+  <Asterisk key="5" size={32} weight="bold" />,
 ];
 
 const letters = ["s", "m", "i", "l", "o"]

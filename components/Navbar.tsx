@@ -80,7 +80,7 @@ export function Navbar() {
         transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
       >
         <motion.div
-          className="overflow-hidden rounded-2xl border border-border bg-[#FFFFFF] shadow-lg"
+          className="overflow-hidden rounded-2xl border border-border bg-[#FAF7F2] shadow-lg"
           initial={false}
           animate={{
             width: isOpen ? "min(600px, 90vw)" : 220,
