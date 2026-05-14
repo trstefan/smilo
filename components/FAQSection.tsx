@@ -66,7 +66,7 @@ export function FAQSection() {
                 onClick={() => setActiveId(activeId === item.id ? null : item.id)}
                 className="w-full py-8 flex items-center justify-between text-left group transition-all duration-300"
               >
-                <span className={`text-xl md:text-2xl font-medium transition-all duration-300 ${
+                <span className={`text-xl md:text-2xl font-semibold transition-all duration-300 ${
                   activeId === item.id ? 'text-[#2D2621]' : 'text-[#2D2621]/70'
                 }`}>
                   {item.question}

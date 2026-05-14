@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { UserCircle, Target, Gift, Sparkle, Lightning } from "@phosphor-icons/react";
 import { WhyItMatters } from "@/components/WhyItMatters";
+import { HeroSection } from "@/components/HeroSection";
 
 export default function Home() {
   const [showContent, setShowContent] = useState(false);
@@ -25,62 +26,16 @@ export default function Home() {
 
       {showContent && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="flex flex-col w-full min-h-screen text-black overflow-x-hidden"
         >
+
           <Navbar />
 
           {/* Hero Section */}
-          <section className="relative pt-48 pb-32 px-6 max-w-7xl mx-auto w-full text-center flex flex-col items-center overflow-visible">
-            {/* Background Glow */}
-            
-
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-              className="bg-[#FAF7F2] border border-black/5 text-[#2D2621]/60 px-6 py-2 rounded-full text-xs font-bold tracking-[0.2em] mb-12 inline-flex items-center gap-2 uppercase shadow-sm"
-            >
-              <Sparkle size={14} weight="fill" className="text-amber-500" />
-              A little goes a long way
-            </motion.div>
-
-            <motion.h1
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-              className="text-6xl md:text-[9rem] font-serif italic leading-[0.85] mb-12 tracking-tight text-[#2D2621]"
-            >
-              Make someone's <br /> day.
-            </motion.h1>
-
-            <motion.p
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-xl md:text-2xl max-w-3xl mb-12 font-medium leading-relaxed text-[#2D2621]/50"
-            >
-              Smilo helps you show up for the people around you with small gestures that leave a big mark. Private, meaningful, and always free.
-            </motion.p>
-
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="flex flex-col items-center gap-8"
-            >
-              <motion.button 
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-black text-white px-14 py-6 rounded-[2rem] text-xl font-bold flex items-center justify-center gap-4 hover:shadow-2xl hover:shadow-black/20 transition-all"
-              >
-                Start Smiling <ArrowRight size={24} />
-              </motion.button>
-              <p className="text-[#2D2621]/30 font-serif italic text-lg tracking-wide">It's completely free to start</p>
-            </motion.div>
-          </section>
+          <HeroSection />
 
           {/* Why It Matters Section */}
           <WhyItMatters />
@@ -155,7 +110,6 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Footer */}
           <Footer />
         </motion.div>
       )}

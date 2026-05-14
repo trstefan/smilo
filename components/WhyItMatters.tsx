@@ -11,19 +11,19 @@ import {
 } from "@phosphor-icons/react"
 import Image from "next/image"
 
-function VisualContainer({ imageUrl, alt, badge }: { imageUrl: string, alt: string, badge?: React.ReactNode }) {
+function VisualContainer({ src, alt, badge }: { src: string, alt: string, badge?: React.ReactNode }) {
   return (
     <div className="relative group">
       <motion.div 
-        whileHover={{ scale: 1.02 }}
+        
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="relative aspect-[4/5] md:aspect-[3/4] w-full max-w-[450px] mx-auto rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white"
+        className="relative aspect-[4/5] md:aspect-[3/4] w-full max-w-[450px] mx-auto rounded-[3rem] overflow-hidden shadow-2xl"
       >
         <Image 
-          src={imageUrl} 
+          src={src} 
           alt={alt}
           fill
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
+          className="object-cover transition-transform duration-700"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
       </motion.div>
@@ -56,9 +56,6 @@ export function WhyItMatters() {
             className="space-y-10"
           >
             <div>
-              <span className="inline-block px-4 py-1.5 rounded-full border border-[#2D2621]/10 text-[#2D2621]/40 text-[10px] font-black uppercase tracking-[0.2em] mb-8">
-                Disconnect
-              </span>
               <h2 className="text-5xl md:text-7xl font-serif italic text-[#2D2621] leading-[1.1] mb-8 tracking-tighter">
                 Reconnect with <br /> people
               </h2>
@@ -100,7 +97,7 @@ export function WhyItMatters() {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-orange-500/5 blur-[100px] rounded-full -z-10" />
             
             <VisualContainer 
-              imageUrl="https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=800&auto=format&fit=crop"
+              src="/images/carousel/2.jfif"
               alt="Kindness gesture"
               badge={
                 <div className="flex items-center gap-4">
@@ -126,10 +123,10 @@ export function WhyItMatters() {
             transition={{ duration: 1 }}
             className="relative lg:order-1 order-2"
           >
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-teal-500/5 blur-[100px] rounded-full -z-10" />
+           
              
              <VisualContainer 
-                imageUrl="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=800&auto=format&fit=crop"
+                src="/images/carousel/3.jfif"
                 alt="Friends laughing"
                 badge={
                   <div className="flex items-center gap-4">
@@ -153,9 +150,6 @@ export function WhyItMatters() {
             className="space-y-10 lg:order-2 order-1"
           >
             <div>
-              <span className="inline-block px-4 py-1.5 rounded-full border border-[#2D2621]/10 text-[#2D2621]/40 text-[10px] font-black uppercase tracking-[0.2em] mb-8">
-                Build Habits
-              </span>
               <h2 className="text-5xl md:text-7xl font-serif italic text-[#2D2621] leading-[1.1] mb-8 tracking-tighter">
                 Small acts, <br /> every day
               </h2>

@@ -57,30 +57,7 @@ export function Footer() {
         {/* Navigation */}
        
         {/* Bottom Bar */}
-        <div className="w-full pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-white/40 text-sm font-medium order-2 md:order-1">
-            By Stefan
-          </div>
-
-          <div className="flex items-center gap-6 order-1 md:order-2">
-            <a href="#" className="text-white/40 hover:text-[#C3FF4D] transition-colors">
-              <Twitter size={18} />
-            </a>
-            <a href="#" className="text-white/40 hover:text-[#C3FF4D] transition-colors">
-              <Facebook size={18} />
-            </a>
-            <a href="#" className="text-white/40 hover:text-[#C3FF4D] transition-colors">
-              <Linkedin size={18} />
-            </a>
-            <a href="#" className="text-white/40 hover:text-[#C3FF4D] transition-colors">
-              <Instagram size={18} />
-            </a>
-          </div>
-
-          <div className="text-white/40 text-sm font-medium order-3">
-            Powered by Smilo
-          </div>
-        </div>
+       
       </div>
     </footer>
   );
