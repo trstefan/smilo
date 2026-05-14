@@ -8,10 +8,11 @@ import { FeatureCard } from "@/components/FeatureCard";
 import { HowItWorks } from "@/components/HowItWorks";
 import { FAQSection } from "@/components/FAQSection";
 import { Footer } from "@/components/Footer";
-import {
-  ArrowRight,
+import { 
+  ArrowRight 
 } from "lucide-react";
-import { UserCircle, Target, Gift, ShieldCheck, Sparkle, Lightning } from "@phosphor-icons/react";
+import { UserCircle, Target, Gift, Sparkle, Lightning } from "@phosphor-icons/react";
+import { WhyItMatters } from "@/components/WhyItMatters";
 
 export default function Home() {
   const [showContent, setShowContent] = useState(false);
@@ -82,70 +83,7 @@ export default function Home() {
           </section>
 
           {/* Why It Matters Section */}
-          <section className="bg-black text-white py-32 md:py-48 px-6 overflow-hidden relative">
-            {/* Subtle background glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[#FFEA31]/5 blur-[120px] rounded-full" />
-            
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center relative z-10">
-              <motion.div
-                initial={{ x: -50, opacity: 0 }}
-                whileInView={{ x: 0, opacity: 1 }}
-                viewport={{ once: true }}
-              >
-                <h2 className="text-5xl md:text-8xl font-serif italic mb-10 leading-[0.9] tracking-tighter">
-                  Why it <br /> Matters
-                </h2>
-                <p className="text-xl md:text-2xl mb-16 text-white/60 leading-relaxed max-w-lg font-medium">
-                  Research shows that meaningful gestures, however small, boost happiness for both the giver and the receiver. Smilo is built around that truth.
-                </p>
-                
-                <div className="flex flex-col gap-10">
-                  <div className="flex items-start gap-6 group">
-                    <div className="bg-[#FFEA31] p-4 rounded-[1.2rem] text-black group-hover:scale-110 transition-transform">
-                      <Sparkle size={32} weight="fill" />
-                    </div>
-                    <div>
-                      <h4 className="font-serif italic text-2xl mb-3">
-                        Human Connection
-                      </h4>
-                      <p className="text-white/50 text-lg leading-relaxed max-w-sm">
-                        Every gesture on Smilo is designed to strengthen real bonds, not followers or likes.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-6 group">
-                    <div className="bg-[#FFEA31] p-4 rounded-[1.2rem] text-black group-hover:scale-110 transition-transform">
-                      <Lightning size={32} weight="fill" />
-                    </div>
-                    <div>
-                      <h4 className="font-serif italic text-2xl mb-3">
-                        Instant Inspiration
-                      </h4>
-                      <p className="text-white/50 text-lg leading-relaxed max-w-sm">
-                        Stuck on what to do? Smilo suggests ideas tailored to the moment, the mood, and the person.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ x: 50, opacity: 0 }}
-                whileInView={{ x: 0, opacity: 1 }}
-                viewport={{ once: true }}
-                className="bg-white/5 border border-white/10 rounded-[3.5rem] p-12 md:p-20 min-h-[500px] flex flex-col items-center justify-center text-center backdrop-blur-sm"
-              >
-                <div className="w-20 h-20 bg-[#FFEA31]/10 rounded-full flex items-center justify-center mb-8">
-                  <Lightning size={40} weight="bold" className="text-[#FFEA31]" />
-                </div>
-                <h3 className="text-3xl font-serif italic mb-4">Interactive Demo</h3>
-                <p className="text-white/40 text-lg max-w-xs">
-                  Experience the ripple effect of kindness in our upcoming live preview.
-                </p>
-              </motion.div>
-            </div>
-          </section>
+          <WhyItMatters />
 
           {/* How It Works */}
           <HowItWorks />
@@ -198,20 +136,18 @@ export default function Home() {
             {/* Ripple effect content */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-8xl mx-auto mt-24">
               <div className="bg-[#FAF7F2] p-12 rounded-[2.5rem] text-left relative overflow-hidden group hover:bg-[#F5F1EA] transition-colors border border-black/5">
-                <span className="absolute -top-4 -right-4 text-9xl font-black opacity-[0.03] select-none group-hover:opacity-[0.05] transition-opacity">01</span>
-                <p className="text-medium font-black mb-8 text-[#2D2621]/40">
+                <h3 className="text-2xl font-black mb-8 text-[#2D2621]/40">
                   One gesture
-                </p>
+                </h3>
                 <p className="text-2xl md:text-3xl font-serif text-[#2D2621] italic leading-relaxed">
                   "You give a flower to a stranger on a grey Monday morning."
                 </p>
               </div>
 
               <div className="bg-[#FAF7F2] p-12 rounded-[2.5rem] text-left relative overflow-hidden group hover:bg-[#F5F1EA] transition-colors border border-black/5">
-                <span className="absolute -top-4 -right-4 text-9xl font-black opacity-[0.03] select-none group-hover:opacity-[0.05] transition-opacity">02</span>
-                <p className="text-medium font-black mb-8 text-[#2D2621]/40">
+                <h3  className="text-2xl font-black mb-8 text-[#2D2621]/40">
                   A thousand smiles
-                </p>
+                </h3>
                 <p className="text-2xl md:text-3xl font-serif text-[#2D2621] italic leading-relaxed">
                   "They go home lighter. They hug their kids a little longer. Someone notices. Something shifts."
                 </p>

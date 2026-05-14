@@ -15,10 +15,11 @@ export function AuthCard({ children, animationKey }: AuthCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="relative z-10 bg-white text-card-foreground w-full md:max-w-[480px] md:rounded-3xl p-8 md:p-10 md:flex-none flex flex-col shadow-2xl -mt-10 md:mt-0 rounded-t-3xl"
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      className="relative z-10 bg-white/95 backdrop-blur-sm text-card-foreground w-full md:max-w-[700px] md:rounded-[2.5rem] p-10 md:p-14 md:flex-none flex flex-col shadow-[0_32px_64px_-12px_rgba(0,0,0,0.15)] -mt-10 md:mt-0 rounded-t-3xl border border-white/20"
     >
       {children}
     </motion.div>
   )
 }
+

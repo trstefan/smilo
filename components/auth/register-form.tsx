@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { FormInput } from "./form-input"
+import { WarningCircle } from "@phosphor-icons/react/dist/ssr"
 
 interface RegisterFormProps {
   onToggleView: () => void
@@ -145,61 +146,66 @@ export function RegisterForm({ onToggleView }: RegisterFormProps) {
         </button>
       </p>
 
-      <form className="space-y-4" onSubmit={handleSubmit} noValidate>
-        <FormInput
-          label="Display Name"
-          id="register-displayName"
-          type="text"
-          placeholder="Your name"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-          onBlur={() => handleBlur("displayName")}
-          error={touched.displayName ? errors.displayName : undefined}
-        />
+      <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
+          <FormInput
+            label="Display Name"
+            id="register-displayName"
+            type="text"
+            placeholder="Your name"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            onBlur={() => handleBlur("displayName")}
+            error={touched.displayName ? errors.displayName : undefined}
+          />
 
-        <FormInput
-          label="Email"
-          id="register-email"
-          type="email"
-          placeholder="Your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onBlur={() => handleBlur("email")}
-          error={touched.email ? errors.email : undefined}
-        />
+          <FormInput
+            label="Email"
+            id="register-email"
+            type="email"
+            placeholder="Your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onBlur={() => handleBlur("email")}
+            error={touched.email ? errors.email : undefined}
+          />
 
-        <FormInput
-          label="Password"
-          id="register-password"
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onBlur={() => handleBlur("password")}
-          error={touched.password ? errors.password : undefined}
-        />
+          <FormInput
+            label="Password"
+            id="register-password"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onBlur={() => handleBlur("password")}
+            error={touched.password ? errors.password : undefined}
+          />
 
-        <FormInput
-          label="Confirm Password"
-          id="register-confirmPassword"
-          type="password"
-          placeholder="••••••••"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          onBlur={() => handleBlur("confirmPassword")}
-          error={touched.confirmPassword ? errors.confirmPassword : undefined}
-        />
+          <FormInput
+            label="Confirm Password"
+            id="register-confirmPassword"
+            type="password"
+            placeholder="••••••••"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            onBlur={() => handleBlur("confirmPassword")}
+            error={touched.confirmPassword ? errors.confirmPassword : undefined}
+          />
+        </div>
 
         {submitError && (
-          <div className="text-red-500 text-sm mt-2 font-medium">
-            {submitError}
+          <div className="flex items-center gap-2 mt-2 bg-destructive/[0.03] p-4 rounded-xl border border-destructive/10 animate-in fade-in slide-in-from-top-2 duration-300">
+            <WarningCircle size={20} weight="fill" className="text-destructive shrink-0" />
+            <p className="text-destructive text-[13px] font-medium leading-snug">
+              {submitError}
+            </p>
           </div>
         )}
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-foreground text-background py-3 rounded-xl font-medium hover:opacity-90 transition-all active:scale-[0.98] mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full bg-foreground text-background py-4 rounded-xl font-semibold hover:opacity-95 transition-all active:scale-[0.98] mt-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
         >
           {isSubmitting ? "Creating account..." : "Create account"}
         </button>

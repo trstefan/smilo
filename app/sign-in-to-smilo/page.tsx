@@ -8,6 +8,7 @@ import {
   LoginForm,
   RegisterForm,
 } from "@/components/auth"
+import Title from "@/components/Title"
 
 type AuthView = "login" | "register"
 
@@ -28,11 +29,8 @@ export default function AuthPage() {
 
       <AnimatePresence mode="wait">
         <AuthCard animationKey={view}>
-          {/* Logo - Desktop */}
-          <div className="hidden md:block mb-6">
-            <span className="text-foreground text-xl font-bold tracking-tighter">
-              {BRAND_NAME}
-            </span>
+          <div className="hidden md:block mb-8">
+            <Title variant="black" />
           </div>
 
           {view === "login" ? (
@@ -41,10 +39,12 @@ export default function AuthPage() {
             <RegisterForm onToggleView={toggleView} />
           )}
 
-          {/* Footer Links */}
-          <div className="mt-8 flex gap-6 text-muted-foreground text-xs">
-            <a href="#" className="hover:text-foreground transition-colors">
+          <div className="mt-10 flex gap-8 text-foreground/40 text-[13px] font-medium border-t border-foreground/[0.03] pt-6">
+            <a href="#" className="hover:text-foreground transition-all">
               Privacy Policy
+            </a>
+            <a href="#" className="hover:text-foreground transition-all">
+              Terms of Service
             </a>
           </div>
         </AuthCard>

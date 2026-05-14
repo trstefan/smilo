@@ -1,3 +1,5 @@
+import Title from "../Title"
+
 interface AuthBackgroundProps {
   imageUrl: string
   brandName: string
@@ -28,9 +30,7 @@ export function AuthBackground({ imageUrl, brandName }: AuthBackgroundProps) {
         }}
       >
         <div className="absolute top-8 left-8">
-          <span className="text-white text-3xl font-bold tracking-tighter">
-            {brandName}
-          </span>
+          <Title variant="black" />
         </div>
       </div>
     </>

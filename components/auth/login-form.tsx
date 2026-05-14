@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { FormInput } from "./form-input"
+import { WarningCircle } from "@phosphor-icons/react/dist/ssr"
 
 interface LoginFormProps {
   onToggleView: () => void
@@ -117,15 +118,18 @@ export function LoginForm({ onToggleView }: LoginFormProps) {
         />
 
         {submitError && (
-          <div className="text-red-500 text-sm mt-2 font-medium">
-            {submitError}
+          <div className="flex items-center gap-2 mt-2 bg-destructive/[0.03] p-4 rounded-xl border border-destructive/10 animate-in fade-in slide-in-from-top-2 duration-300">
+            <WarningCircle size={20} weight="fill" className="text-destructive shrink-0" />
+            <p className="text-destructive text-[13px] font-medium leading-snug">
+              {submitError}
+            </p>
           </div>
         )}
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-foreground text-background py-3 rounded-xl font-medium hover:opacity-90 transition-all active:scale-[0.98] mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full bg-foreground text-background py-4 rounded-xl font-semibold hover:opacity-95 transition-all active:scale-[0.98] mt-4 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
         >
           {isSubmitting ? "Logging in..." : "Login"}
         </button>

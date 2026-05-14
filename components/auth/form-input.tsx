@@ -1,5 +1,6 @@
 import { InputHTMLAttributes } from "react"
 import { cn } from "@/lib/utils"
+import { WarningCircle } from "@phosphor-icons/react/dist/ssr"
 
 interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string
@@ -8,28 +9,35 @@ interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 export function FormInput({ label, id, className, error, ...props }: FormInputProps) {
   return (
-    <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-muted-foreground text-sm font-medium">
+    <div className="space-y-2">
+      <label 
+        htmlFor={id} 
+        className="block text-foreground/60 text-[13px] font-medium tracking-tight ml-1"
+      >
         {label}
       </label>
-      <input
-        id={id}
-        className={cn(
-          "w-full px-4 py-3 rounded-xl border",
-          error ? "border-destructive" : "border-input",
-          "focus:outline-none focus:ring-2",
-          error ? "focus:ring-destructive/20 focus:border-destructive" : "focus:ring-primary/20 focus:border-primary",
-          "transition-all placeholder:text-muted-foreground/50",
-          className
-        )}
-        aria-invalid={error ? "true" : undefined}
-        aria-describedby={error ? `${id}-error` : undefined}
-        {...props}
-      />
+      <div className="relative group">
+        <input
+          id={id}
+          className={cn(
+            "w-full px-4 py-3.5 rounded-xl border transition-all duration-300 placeholder:text-muted-foreground/40 text-[15px] focus:outline-none",
+            error 
+              ? "border-destructive/40 bg-destructive/[0.02] text-destructive focus:ring-4 focus:ring-destructive/5 focus:border-destructive" 
+              : "border-border/60 bg-secondary/15 hover:bg-secondary/25 hover:border-foreground/10 focus:bg-background focus:border-foreground/30 focus:ring-4 focus:ring-foreground/[0.03]",
+            className
+          )}
+          aria-invalid={error ? "true" : undefined}
+          aria-describedby={error ? `${id}-error` : undefined}
+          {...props}
+        />
+      </div>
       {error && (
-        <p id={`${id}-error`} className="text-destructive text-sm" role="alert">
-          {error}
-        </p>
+        <div className="flex items-center gap-1.5 mt-1.5 px-1 animate-in fade-in slide-in-from-top-1 duration-300">
+          <WarningCircle size={16} weight="fill" className="text-destructive shrink-0" />
+          <p id={`${id}-error`} className="text-destructive text-[13px] font-medium leading-tight" role="alert">
+            {error}
+          </p>
+        </div>
       )}
     </div>
   )
