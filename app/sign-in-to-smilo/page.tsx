@@ -38,15 +38,6 @@ export default function AuthPage() {
           ) : (
             <RegisterForm onToggleView={toggleView} />
           )}
-
-          <div className="mt-10 flex gap-8 text-foreground/40 text-[13px] font-medium border-t border-foreground/[0.03] pt-6">
-            <a href="#" className="hover:text-foreground transition-all">
-              Privacy Policy
-            </a>
-            <a href="#" className="hover:text-foreground transition-all">
-              Terms of Service
-            </a>
-          </div>
         </AuthCard>
       </AnimatePresence>
     </div>

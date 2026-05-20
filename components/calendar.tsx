@@ -5,7 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type CalendarTag = "Family" | "Friends" | "Strangers" | "Colleagues";
+import { COLORS } from "@/lib/constats";
+
+export type CalendarTag = "Family" | "Friends" | "Strangers" | "Colleagues" | "Environment";
 
 export interface CalendarTask {
   id: string;
@@ -32,9 +34,10 @@ interface CalendarProps {
 }
 
 const TAG_COLORS: Record<CalendarTag, string> = {
-  Family: "#006699",
-  Friends: "#047857",
-  Strangers: "#A855F7",
+  Family: COLORS.Family,
+  Friends: COLORS.Friends,
+  Strangers: COLORS.Strangers,
+  Environment: COLORS.Environment,
   Colleagues: "#059669",
 };
 

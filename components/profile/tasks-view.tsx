@@ -4,37 +4,12 @@ import { useState, useEffect, useCallback } from "react"
 import { Bookmark, X, ChevronRight, ChevronLeft, ChevronUp, ChevronDown, Loader2 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 
+import { CATEGORY_CONFIG, COLORS } from "@/lib/constats"
+
 // Mock Data & Config
 const TASK_CATEGORIES = ["All", "Family", "Friends", "Strangers", "Environment"]
 const ITEMS_PER_PAGE = 5
 
-const CATEGORY_CONFIG: Record<string, { icon: string, color: string, badgeColor: string }> = {
-  "Family": { 
-    icon: "🏠", 
-    color: "bg-emerald-100 text-emerald-700",
-    badgeColor: "bg-emerald-100 text-emerald-700"
-  },
-  "Friends": { 
-    icon: "🤝", 
-    color: "bg-blue-100 text-blue-700",
-    badgeColor: "bg-blue-100 text-blue-700"
-  },
-  "Strangers": { 
-    icon: "🌍", 
-    color: "bg-purple-100 text-purple-700",
-    badgeColor: "bg-purple-700 text-white"
-  },
-  "Environment": { 
-    icon: "🌱", 
-    color: "bg-green-100 text-green-700",
-    badgeColor: "bg-green-100 text-green-700"
-  },
-  "Default": {
-    icon: "📋",
-    color: "bg-zinc-100 text-zinc-700",
-    badgeColor: "bg-zinc-100 text-zinc-700"
-  }
-}
 
 interface Task {
   id: string
@@ -351,11 +326,17 @@ export function TasksView() {
                     return (
                       <div 
                         key={task.id} 
-                        className={`${isCompleted ? 'bg-zinc-200/50' : 'bg-zinc-50'} rounded-3xl p-6 border border-zinc-100 transition-colors`}
+                        className={`rounded-3xl p-6 border transition-all duration-300 ${
+                          isCompleted 
+                            ? 'bg-[#1a7431] text-white border-transparent shadow-lg shadow-[#1a7431]/20' 
+                            : 'bg-zinc-50 border-zinc-100 hover:bg-zinc-100'
+                        }`}
                       >
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex gap-3 items-center">
-                          <span className={`px-2.5 py-1 text-[10px] uppercase font-bold tracking-wider rounded-full ${config.badgeColor}`}>
+                          <span className={`px-2.5 py-1 text-[10px] uppercase font-bold tracking-wider rounded-full ${
+                            isCompleted ? 'bg-white/20 text-white' : config.badgeColor
+                          }`}>
                             {task.category}
                           </span>
                         </div>
@@ -363,15 +344,15 @@ export function TasksView() {
                           onClick={() => !isCompleted && toggleBookmark(task.id)}
                           className={`w-6 h-6 cursor-pointer transition-all active:scale-90 ${
                             isCompleted 
-                              ? "text-zinc-300 cursor-not-allowed"
+                              ? "text-white/40 cursor-not-allowed"
                               : bookmarkedTaskIds.has(task.id) 
                                 ? "text-[#006699] fill-[#006699]" 
                                 : "text-zinc-400 hover:text-zinc-600"
                           }`} 
                         />
                       </div>
-                      <h3 className="text-[17px] font-bold text-zinc-900 mb-1 leading-tight">{task.task_name}</h3>
-                      <p className="text-[14px] text-zinc-500 mb-6 line-clamp-2">{task.description}</p>
+                      <h3 className={`text-[17px] font-bold mb-1 leading-tight ${isCompleted ? 'text-white' : 'text-zinc-900'}`}>{task.task_name}</h3>
+                      <p className={`text-[14px] mb-6 line-clamp-2 ${isCompleted ? 'text-white/80' : 'text-zinc-500'}`}>{task.description}</p>
                     </div>
                   );
                 })
@@ -395,7 +376,11 @@ export function TasksView() {
                     return (
                       <div 
                         key={task.id} 
-                        className={`${isCompleted ? 'bg-zinc-200/50' : 'bg-zinc-50/80'} rounded-3xl p-6 md:p-8 flex flex-col transition-all ${!isCompleted ? 'hover:bg-zinc-100' : ''} ${
+                        className={`rounded-3xl p-6 md:p-8 flex flex-col transition-all duration-300 ${
+                          isCompleted 
+                            ? 'bg-[#1a7431] text-white border-transparent shadow-lg shadow-[#1a7431]/20' 
+                            : 'bg-zinc-50/80 hover:bg-zinc-100'
+                        } ${
                           isLarge ? "lg:col-span-2 flex-row items-center gap-8" : ""
                         }`}
                       >
@@ -410,7 +395,7 @@ export function TasksView() {
                                  onClick={() => !isCompleted && toggleBookmark(task.id)}
                                  className={`w-6 h-6 cursor-pointer transition-all active:scale-90 ${
                                    isCompleted 
-                                     ? "text-zinc-300 cursor-not-allowed"
+                                     ? "text-white/40 cursor-not-allowed"
                                      : bookmarkedTaskIds.has(task.id) 
                                        ? "text-[#006699] fill-[#006699]" 
                                        : "text-zinc-400 hover:text-zinc-600"
@@ -421,32 +406,31 @@ export function TasksView() {
                              <p className="text-sm text-zinc-600 mb-6 flex-1 max-w-sm">{task.description}</p>
                              <div className="flex gap-2">
                                 <span className={`px-3 py-1 rounded-full text-xs font-bold ${config.color}`}>{task.category}</span>
-                                <span className="px-3 py-1 rounded-full text-xs font-bold bg-zinc-200 text-zinc-600">Daily Task</span>
                              </div>
                           </div>
                         </>
                       ) : (
                         <>
                           <div className="flex justify-between items-start mb-6">
-                            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-2xl">
+                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm text-2xl ${isCompleted ? 'bg-white/10' : 'bg-white'}`}>
                               {config.icon}
                             </div>
                             <Bookmark 
                               onClick={() => !isCompleted && toggleBookmark(task.id)}
                               className={`w-6 h-6 cursor-pointer transition-all active:scale-90 ${
                                 isCompleted 
-                                  ? "text-zinc-300 cursor-not-allowed"
+                                  ? "text-white/40 cursor-not-allowed"
                                   : bookmarkedTaskIds.has(task.id) 
                                     ? "text-[#006699] fill-[#006699]" 
                                     : "text-zinc-400 hover:text-zinc-600"
                               }`} 
                             />
                           </div>
-                          <h3 className="text-lg font-bold text-zinc-900 mb-2">{task.task_name}</h3>
-                          <p className="text-sm text-zinc-600 mb-6 flex-1 line-clamp-3">{task.description}</p>
+                          <h3 className={`text-lg font-bold mb-2 ${isCompleted ? 'text-white' : 'text-zinc-900'}`}>{task.task_name}</h3>
+                          <p className={`text-sm mb-6 flex-1 line-clamp-3 ${isCompleted ? 'text-white/80' : 'text-zinc-600'}`}>{task.description}</p>
                           
                           <div className="flex gap-2 mt-auto">
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide ${config.color}`}>
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold tracking-wide ${isCompleted ? 'bg-white/20 text-white' : config.color}`}>
                               {task.category}
                             </span>
                           </div>
@@ -513,18 +497,24 @@ export function TasksView() {
                         return (
                           <div 
                             key={item.id} 
-                            className={`${isCompleted ? 'bg-zinc-200/50' : 'bg-zinc-50'} rounded-2xl p-4 flex items-center gap-4 group animate-in fade-in slide-in-from-right-2 duration-300 transition-colors`}
+                            className={`rounded-2xl p-4 flex items-center gap-4 group animate-in fade-in slide-in-from-right-2 duration-300 transition-all ${
+                              isCompleted 
+                                ? 'bg-[#1a7431] text-white border-transparent' 
+                                : 'bg-zinc-50 border-zinc-100 hover:bg-zinc-100'
+                            }`}
                           >
-                          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm text-xl shrink-0">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm text-xl shrink-0 ${isCompleted ? 'bg-white/10' : 'bg-white'}`}>
                             {config.icon}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-sm font-bold text-zinc-900 truncate">{task.task_name}</h4>
-                            <p className="text-[11px] text-zinc-500 font-medium">{task.category} • Daily</p>
+                            <h4 className={`text-sm font-bold truncate ${isCompleted ? 'text-white' : 'text-zinc-900'}`}>{task.task_name}</h4>
+                            <p className={`text-[11px] font-medium ${isCompleted ? 'text-white/70' : 'text-zinc-500'}`}>{task.category}</p>
                           </div>
                           <button 
                             onClick={() => toggleBookmark(item.task_id)}
-                            className="text-zinc-400 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:text-red-500"
+                            className={`opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity p-2 ${
+                              isCompleted ? 'text-white/60 hover:text-white' : 'text-zinc-400 hover:text-red-500'
+                            }`}
                           >
                              <X className="w-4 h-4" />
                           </button>

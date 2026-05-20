@@ -12,7 +12,7 @@ export function FormInput({ label, id, className, error, ...props }: FormInputPr
     <div className="space-y-2">
       <label 
         htmlFor={id} 
-        className="block text-foreground/60 text-[13px] font-medium tracking-tight ml-1"
+        className="block text-foreground/60 text-[14px] font-bold tracking-tight ml-1"
       >
         {label}
       </label>

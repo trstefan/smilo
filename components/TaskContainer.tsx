@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Clock, CheckCircle2, Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { CATEGORY_CONFIG, COLORS } from '@/lib/constats';
 
 interface Task {
   id: string; // row id in user_active_tasks
@@ -21,13 +22,16 @@ interface Task {
 
 interface TaskCardProps {
   task: Task;
+  index: number;
   onComplete: (task: Task) => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onComplete }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, index, onComplete }) => {
   const [timeRemaining, setTimeRemaining] = useState<string>('');
 
   useEffect(() => {
+    if (!task.completed) return;
+
     const updateTimer = () => {
       const now = new Date().getTime();
       const resetTime = new Date(task.resets_at).getTime();
@@ -49,41 +53,26 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onComplete }) => {
     const interval = setInterval(updateTimer, 1000);
 
     return () => clearInterval(interval);
-  }, [task.resets_at]);
+  }, [task.completed, task.resets_at]);
 
-  const getCategoryColor = (category: string) => {
-    const colors: Record<string, string> = {
-      'Family': 'bg-emerald-100 text-emerald-700 border-emerald-200',
-      'Friends': 'bg-blue-100 text-blue-700 border-blue-200',
-      'Strangers': 'bg-purple-100 text-purple-700 border-purple-200',
-      'Environment': 'bg-green-100 text-green-700 border-green-200'
-    };
-    return colors[category] || 'bg-zinc-100 text-zinc-700 border-zinc-200';
-  };
-
-  const getCategoryIcon = (category: string) => {
-    const icons: Record<string, string> = {
-      'Family': '🏠',
-      'Friends': '🤝',
-      'Strangers': '🌍',
-      'Environment': '🌱'
-    };
-    return icons[category] || '📋';
-  };
+  const config = CATEGORY_CONFIG[task.category] || CATEGORY_CONFIG.Default;
 
   return (
     <Card className={`group flex flex-col h-full w-full transition-all duration-300 border-2 overflow-hidden ${
       task.completed 
         ? 'bg-zinc-50/80 border-zinc-100 shadow-sm opacity-90' 
-        : 'bg-white border-zinc-100 shadow-sm hover:shadow-xl hover:border-blue-100 hover:-translate-y-1'
-    }`}>
+        : 'bg-white border-zinc-100 shadow-sm hover:shadow-xl hover:-translate-y-1'
+    }`}
+    style={!task.completed ? {
+      '--hover-border-color': COLORS[task.category as keyof typeof COLORS] || '#006699'
+    } as React.CSSProperties : undefined}>
       <CardHeader className="pb-4 relative">
         <div className="absolute top-0 right-0 p-4 opacity-[0.08] text-7xl transform translate-x-4 -translate-y-4 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 pointer-events-none">
-          {getCategoryIcon(task.category)}
+          {config.icon}
         </div>
         <div className="flex items-start justify-between gap-4 relative z-10">
           <div className="flex flex-col gap-2">
-            <Badge variant="outline" className={`w-fit font-bold uppercase tracking-wider text-[10px] ${getCategoryColor(task.category)}`}>
+            <Badge variant="outline" className={`w-fit font-bold uppercase tracking-wider text-[10px] ${config.badgeColor} border-none`}>
               {task.category}
             </Badge>
             <CardTitle className="text-xl font-bold text-zinc-900 leading-tight pr-4">
@@ -91,8 +80,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onComplete }) => {
             </CardTitle>
           </div>
           {task.completed && (
-            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0 shadow-sm ring-4 ring-white">
-              <CheckCircle2 className="h-5 w-5 text-green-600" />
+            <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm ring-4 ring-white"
+                 style={{ backgroundColor: `${COLORS[task.category as keyof typeof COLORS] || '#006699'}15` }}>
+              <CheckCircle2 className="h-5 w-5" style={{ color: COLORS[task.category as keyof typeof COLORS] || '#006699' }} />
             </div>
           )}
         </div>
@@ -104,7 +94,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onComplete }) => {
         </CardDescription>
         
         {task.completed && (
-          <div className="mt-4 flex items-center gap-2 text-xs font-bold text-zinc-400 uppercase tracking-wide">
+          <div className="mt-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wide"
+               style={{ color: COLORS[task.category as keyof typeof COLORS] || '#A1A1AA' }}>
              <Clock className="h-3.5 w-3.5" />
              Resets {new Date(task.resets_at) > new Date() ? `in ${timeRemaining}` : 'Soon'}
           </div>
@@ -116,13 +107,28 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onComplete }) => {
           <div className="w-full">
             <div className="flex items-center justify-between gap-2 text-sm">
               <span className="text-zinc-500 font-bold uppercase tracking-wider text-[10px]">Resetting in</span>
-              <span className="font-bold text-zinc-900 bg-white px-3 py-1 rounded-full shadow-sm border border-zinc-200">{timeRemaining}</span>
+              <span className="font-bold bg-white px-3 py-1 rounded-full shadow-sm border"
+                    style={{ 
+                      borderColor: `${COLORS[task.category as keyof typeof COLORS] || '#006699'}30`, 
+                      color: COLORS[task.category as keyof typeof COLORS] || '#006699' 
+                    }}>
+                {timeRemaining}
+              </span>
             </div>
           </div>
         ) : (
           <Button 
             onClick={() => onComplete(task)} 
-            className="w-full bg-[#006699] hover:bg-[#005580] text-white font-bold py-5 rounded-xl transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
+            className="w-full text-white font-bold py-5 rounded-xl transition-all shadow-md hover:shadow-lg active:scale-[0.98]"
+            style={{ 
+              backgroundColor: COLORS[task.category as keyof typeof COLORS] || '#006699',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.filter = 'brightness(0.9)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.filter = '';
+            }}
           >
             Mark as done
           </Button>
@@ -134,6 +140,17 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onComplete }) => {
 
 interface TaskContainerProps {
   activeTasks?: Task[];
+}
+
+/**
+ * Helper: compute the midnight-based reset time for a given slot.
+ * Slot 1 → next midnight, Slot 2 → midnight + 24h, Slot 3 → midnight + 48h.
+ */
+function getResetTimeForSlot(slot: number): Date {
+  const midnight = new Date();
+  midnight.setHours(24, 0, 0, 0);
+  const offsetDays = Math.max(0, slot - 1);
+  return new Date(midnight.getTime() + offsetDays * 24 * 60 * 60 * 1000);
 }
 
 const TaskContainer: React.FC<TaskContainerProps> = ({ activeTasks: initialActiveTasks }) => {
@@ -174,10 +191,28 @@ const TaskContainer: React.FC<TaskContainerProps> = ({ activeTasks: initialActiv
     const { data: { user } } = await supabase.auth.getUser();
     
     if (user) {
-      // 1. Assign tasks if needed
-      await supabase.rpc('assign_tasks_to_user', { p_user_id: user.id });
+      // 1. Fetch current tasks from DB first
+      const { data: existingTasks } = await supabase
+        .from('user_active_tasks')
+        .select('id, completed, resets_at')
+        .eq('user_id', user.id);
+
+      const now = new Date();
+
+      // 2. Check if any completed tasks have expired (reset time has passed)
+      const hasExpiredTasks = existingTasks?.some(
+        t => t.completed && new Date(t.resets_at) <= now
+      ) ?? false;
+
+      // 3. Check if we have fewer than 3 slots filled
+      const hasEmptySlots = !existingTasks || existingTasks.length < 3;
+
+      // 4. ONLY call assign_tasks if slots are empty or tasks have actually expired
+      if (hasEmptySlots || hasExpiredTasks) {
+        await supabase.rpc('assign_tasks_to_user', { p_user_id: user.id });
+      }
       
-      // 2. Fetch the 3 active tasks
+      // 5. Fetch the active tasks
       await fetchActiveTasks(user.id);
     }
     setLoading(false);
@@ -188,40 +223,51 @@ const TaskContainer: React.FC<TaskContainerProps> = ({ activeTasks: initialActiv
   }, [initTasks]);
 
   const handleComplete = async (task: Task) => {
+    const resetTime = getResetTimeForSlot(task.slot);
+
+    // 1. Optimistic UI update — instant feedback
+    setActiveTasks(prev => prev.map(t =>
+      t.id === task.id
+        ? { ...t, completed: true, completed_at: new Date().toISOString(), resets_at: resetTime.toISOString() }
+        : t
+    ));
+
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    // 1. Update user_active_tasks setting completed = true and completed_at = now()
-    const { error: updateError } = await supabase
-      .from('user_active_tasks')
-      .update({ 
-        completed: true, 
-        completed_at: new Date().toISOString() 
-      })
-      .eq('id', task.id);
+    try {
+      // 2. Update in DB: mark completed AND set the correct resets_at so it persists across refreshes
+      const { error: updateError } = await supabase
+        .from('user_active_tasks')
+        .update({ 
+          completed: true, 
+          completed_at: new Date().toISOString(),
+          resets_at: resetTime.toISOString()
+        })
+        .eq('id', task.id);
 
-    if (updateError) {
-      console.error('Error updating task:', updateError);
-      return;
+      if (updateError) {
+        console.error('Error updating task:', updateError);
+        return;
+      }
+
+      // 3. Insert into completed_task_list
+      const { error: insertError } = await supabase
+        .from('completed_task_list')
+        .insert({ 
+          user_id: user.id, 
+          task_id: task.task_id 
+        });
+
+      if (insertError) {
+        console.error('Error recording completed task:', insertError);
+      }
+
+      // 4. Do NOT call assign_tasks_to_user here.
+      //    The completed task stays in its slot until resets_at expires.
+    } catch (err) {
+      console.error('Error in handleComplete:', err);
     }
-
-    // 2. Insert into completed_task_list
-    const { error: insertError } = await supabase
-      .from('completed_task_list')
-      .insert({ 
-        user_id: user.id, 
-        task_id: task.task_id 
-      });
-
-    if (insertError) {
-      console.error('Error recording completed task:', insertError);
-    }
-
-    // 3. Re-call assign_tasks_to_user to refill any eligible slots
-    await supabase.rpc('assign_tasks_to_user', { p_user_id: user.id });
-
-    // 4. Refresh the active tasks
-    await fetchActiveTasks(user.id);
   };
 
   if (loading) {
@@ -235,14 +281,13 @@ const TaskContainer: React.FC<TaskContainerProps> = ({ activeTasks: initialActiv
   return (
     <div className="w-full">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
-        {activeTasks.map(task => (
-          <TaskCard key={task.id} task={task} onComplete={handleComplete} />
+        {activeTasks.map((task, index) => (
+          <TaskCard key={task.id} task={task} index={index} onComplete={handleComplete} />
         ))}
       </div>
     </div>
   );
 };
-
 
 export default TaskContainer;
 

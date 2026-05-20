@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { timeAgo } from "@/lib/utils"
 import { History, Sparkles } from "lucide-react"
+import { CATEGORY_CONFIG } from "@/lib/constats"
 
 interface ActivityItem {
   id: string
@@ -14,13 +15,6 @@ interface ActivityItem {
 }
 
 export function RecentActivity({ activity }: { activity: ActivityItem[] }) {
-  const CATEGORY_CONFIG: Record<string, { color: string, text: string, icon: string, bg: string }> = {
-    Family: { color: "bg-[#006699]", text: "text-[#006699]", icon: "🏠", bg: "bg-blue-50/50" },
-    Friends: { color: "bg-emerald-500", text: "text-emerald-600", icon: "🤝", bg: "bg-emerald-50/50" },
-    Strangers: { color: "bg-indigo-500", text: "text-indigo-600", icon: "🌍", bg: "bg-indigo-50/50" },
-    Environment: { color: "bg-green-500", text: "text-green-600", icon: "🌱", bg: "bg-green-50/50" },
-    Default: { color: "bg-zinc-400", text: "text-zinc-500", icon: "📋", bg: "bg-zinc-50/50" },
-  }
 
   // Group activity by date
   const groupedActivity = activity.reduce((groups: Record<string, ActivityItem[]>, item) => {
@@ -100,7 +94,7 @@ export function RecentActivity({ activity }: { activity: ActivityItem[] }) {
                         className="group relative"
                       >
                         <div className="bg-white hover:bg-zinc-50/50 border border-zinc-100 p-4 rounded-[2rem] transition-all duration-500 shadow-sm hover:shadow-md hover:border-zinc-200 flex items-center gap-4">
-                          <div className={`w-12 h-12 rounded-2xl ${config.bg} flex items-center justify-center shrink-0 text-2xl shadow-inner transition-all duration-500`}>
+                          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-2xl shadow-inner transition-all duration-500`}>
                              {config.icon}
                           </div>
                           
@@ -113,7 +107,7 @@ export function RecentActivity({ activity }: { activity: ActivityItem[] }) {
                                 {timeAgo(item.completed_at)}
                               </span>
                               <div className="w-1 h-1 rounded-full bg-zinc-200" />
-                              <span className={`text-[9px] font-black uppercase tracking-[0.15em] ${config.text}`}>
+                              <span className={`text-[9px] font-black uppercase ${config.textClass}`}>
                                 {category}
                               </span>
                             </div>

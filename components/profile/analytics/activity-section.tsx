@@ -17,6 +17,12 @@ export function ActivitySection({ tasks, tagColorClasses }: ActivitySectionProps
     return new Date(d.setDate(diff));
   });
 
+  const [selectedDate, setSelectedDate] = useState<Date>(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
+
   const [direction, setDirection] = useState(0);
 
   const nextMonth = () => {
@@ -131,24 +137,86 @@ export function ActivitySection({ tasks, tagColorClasses }: ActivitySectionProps
                 
                 const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
                 const dayTasks = tasks.filter(t => t.date.toDateString() === itemDate.toDateString());
-                const isToday = itemDate.toDateString() === new Date().toDateString();
+                const isSelected = selectedDate.toDateString() === itemDate.toDateString();
 
                 return (
-                  <div key={idx} className="flex flex-col items-center flex-1 min-w-0">
+                  <button 
+                    key={idx} 
+                    onClick={() => setSelectedDate(itemDate)}
+                    className="flex flex-col items-center flex-1 min-w-0 outline-none active:scale-95 transition-transform"
+                  >
                     <span className="text-[9px] font-bold text-zinc-400 mb-2">{dayNames[idx]}</span>
-                    <div className={`w-9 h-11 rounded-2xl flex flex-col items-center justify-center relative transition-all ${isToday ? 'bg-[#006699] shadow-lg shadow-[#006699]/30 text-white' : 'bg-zinc-50 text-zinc-900 border border-zinc-100'}`}>
+                    <div className={`w-9 h-11 rounded-2xl flex flex-col items-center justify-center relative transition-all duration-200 ${
+                      isSelected 
+                        ? 'bg-[#006699] shadow-lg shadow-[#006699]/30 text-white scale-110' 
+                        : 'bg-zinc-50 text-zinc-900 border border-zinc-100 hover:bg-zinc-100'
+                    }`}>
                       <span className="text-xs font-bold mt-0.5">{itemDate.getDate()}</span>
                       <div className="h-3 flex items-center space-x-0.5">
                         {dayTasks.slice(0, 3).map(task => (
-                          <div key={task.id} className={`w-1 h-1 rounded-full ${isToday ? 'bg-white' : tagColorClasses[task.tag]}`} />
+                          <div 
+                            key={task.id} 
+                            className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : (tagColorClasses[task.tag] || 'bg-zinc-400')}`} 
+                          />
                         ))}
                       </div>
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </motion.div>
           </AnimatePresence>
+        </div>
+
+        {/* Separator Line */}
+        <div className="h-px bg-zinc-100 my-6" />
+
+        {/* Selected Date Details */}
+        <div className="flex flex-col gap-4 px-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              {/* Day Number Icon */}
+              <div className="w-12 h-12 rounded-2xl bg-[#006699] text-white flex items-center justify-center font-bold text-lg shadow-md shadow-[#006699]/20">
+                {selectedDate.getDate()}
+              </div>
+              
+              <div>
+                <h4 className="font-bold text-zinc-900 text-base leading-tight">
+                  {selectedDate.toLocaleDateString("en-US", { weekday: 'long' })}
+                </h4>
+                <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mt-0.5">
+                  {tasks.filter(t => t.date.toDateString() === selectedDate.toDateString()).length} completed events
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Completed Task Names List */}
+          {(() => {
+            const selectedTasks = tasks.filter(t => t.date.toDateString() === selectedDate.toDateString());
+            return selectedTasks.length > 0 ? (
+              <div className="mt-2 space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                {selectedTasks.map(task => (
+                  <div 
+                    key={task.id} 
+                    className="flex items-start gap-3 p-3 bg-zinc-50 border border-zinc-100/50 rounded-2xl"
+                  >
+                    <div className={`w-2.5 h-2.5 rounded-full mt-1 shrink-0 ${tagColorClasses[task.tag] || 'bg-[#006699]'}`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-zinc-800 leading-snug">{task.title}</p>
+                      <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1 block">
+                        {task.tag}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-6 text-zinc-400 text-xs font-semibold bg-zinc-50/50 rounded-2xl border border-dashed border-zinc-200 mt-2">
+                No tasks completed on this day.
+              </div>
+            );
+          })()}
         </div>
       </div>
     </>

@@ -12,6 +12,7 @@ import {
   SignOut,
   SidebarSimple
 } from "@phosphor-icons/react";
+import Title from "../Title";
 
 interface SidebarProps {
   displayName: string;
@@ -73,14 +74,14 @@ export function Sidebar({ displayName, initials }: SidebarProps) {
       <div className={`flex items-center pt-8 pb-6 ${isCollapsed ? 'justify-center px-0' : 'px-6 justify-between'}`}>
         {!isCollapsed && (
           <div className="flex items-center space-x-1 mb-1">
-            <h1 className="text-2xl font-bold tracking-tight">SMILO<span className="text-[#4AC4E9]">.</span></h1>
+            <Title />
           </div>
         )}
         <button 
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className={`text-zinc-400 hover:text-white transition-colors ${isCollapsed ? 'mx-auto' : ''}`}
+          className={`text-zinc-400 hover:text-[#49dcb1] hover:cursor-pointer transition-colors ${isCollapsed ? 'mx-auto' : ''}`}
         >
-          <SidebarSimple className="w-6 h-6" weight="regular" />
+          <SidebarSimple className="w-6 h-6 " weight="regular" />
         </button>
       </div>
 
@@ -117,7 +118,6 @@ export function Sidebar({ displayName, initials }: SidebarProps) {
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-white truncate">{displayName}</p>
                 </div>
-                <p className="text-xs text-zinc-400 truncate mt-0.5">12 quests active</p>
               </div>
             )}
           </div>

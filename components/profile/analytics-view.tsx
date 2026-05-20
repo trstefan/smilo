@@ -8,13 +8,14 @@ import { StatCard } from "./analytics/stat-card"
 import { ActivitySection } from "./analytics/activity-section"
 import { GoalAchievement } from "./analytics/goal-achievement"
 import { QuestDistribution } from "./analytics/quest-distribution"
+import { COLORS } from "@/lib/constats"
 
 const TAG_COLOR_CLASSES: Record<string, string> = {
-  Family: "bg-[#006699]",
-  Friends: "bg-[#047857]",
-  Strangers: "bg-[#A855F7]",
+  Family: "bg-[#E07A30]",
+  Friends: "bg-[#aa3e98]",
+  Strangers: "bg-[#D81159]",
+  Environment: "bg-[#25a244]",
   Colleagues: "bg-[#059669]",
-  Environment: "bg-[#059669]",
 };
 
 export function AnalyticsView() {
