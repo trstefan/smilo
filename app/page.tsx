@@ -52,7 +52,7 @@ export default function Home() {
               <h2 className="text-4xl md:text-7xl font-serif text-[#2D2621] text-center mb-16 leading-[1.1] italic">
                Engineered for good
               </h2>
-              <p className="text-xl md:text-2xl max-w-3xl mx-auto font-medium opacity-50">
+              <p className="text-xl md:text-2xl max-w-3xl mx-auto font-semibold text-[#2D2621]/70 tracking-tight">
                Every feature exists for one reason: to help you be a little kinder, every day.
               </p>
             </div>
@@ -60,20 +60,21 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <FeatureCard
                 icon={<UserCircle size={32} weight="bold" />}
-                title="PERSONAL"
-                description="Just for you. No social feed, no followers. Your kindness journey is private and pressure-free."
+                title="Personal"
+                description="Built around your life
+No guilt, no streaks, no pressure. Smilo works with your schedule, not against it. Miss a day? The world still needs you tomorrow."
                 color="bg-[#76E0A8]"
               />
               <FeatureCard
                 icon={<Target size={32} weight="bold" />}
-                title="INTENTIONAL"
+                title="Intentional"
                 description="Every gesture suggestion is curated to be doable, meaningful, and real for your specific situation."
                 color="bg-[#9FB2F5]"
               />
               <FeatureCard
                 icon={<Gift size={32} weight="bold" />}
-                title="FREE ALWAYS"
-                description="Smilo is 100% free. No hidden plans, no premium tiers. Because kindness shouldn't cost a thing."
+                title="Free Always"
+                description="Smilo is 100% free. No premium tier. No hidden features. No 'upgrade to unlock kindness.' Every single thing Smilo does is free, because it always should be "
                 color="bg-[#F9A8A8]"
               />
             </div>
@@ -91,7 +92,7 @@ export default function Home() {
             {/* Ripple effect content */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-8xl mx-auto mt-24">
               <div className="bg-[#FAF7F2] p-12 rounded-[2.5rem] text-left relative overflow-hidden group hover:bg-[#F5F1EA] transition-colors border border-black/5">
-                <h3 className="text-2xl font-black mb-8 text-[#2D2621]/40">
+                <h3 className="text-2xl font-bold font-serif mb-8 text-[#2D2621]/60 tracking-tight">
                   One gesture
                 </h3>
                 <p className="text-2xl md:text-3xl font-serif text-[#2D2621] italic leading-relaxed">
@@ -100,7 +101,7 @@ export default function Home() {
               </div>
 
               <div className="bg-[#FAF7F2] p-12 rounded-[2.5rem] text-left relative overflow-hidden group hover:bg-[#F5F1EA] transition-colors border border-black/5">
-                <h3  className="text-2xl font-black mb-8 text-[#2D2621]/40">
+                <h3  className="text-2xl font-bold font-serif mb-8 text-[#2D2621]/60 tracking-tight">
                   A thousand smiles
                 </h3>
                 <p className="text-2xl md:text-3xl font-serif text-[#2D2621] italic leading-relaxed">

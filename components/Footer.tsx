@@ -37,19 +37,19 @@ export function Footer() {
           className="text-center mb-8"
         >
           <h2 className="text-4xl md:text-6xl font-serif italic mb-6 max-w-4xl mx-auto leading-[1.1]">
-            Make Kindness a <br /> Daily Habit
+           Ready to make someone's day?
           </h2>
           <p className="text-white/50 text-base md:text-lg max-w-2xl mx-auto mb-8">
-            Join thousands of people spreading positivity and building 
-            stronger communities through small, meaningful gestures.
+            
+It costs nothing. It takes a minute. And it stays with them longer than you'd think
           </p>
           
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-[#C3FF4D] text-black px-8 py-4 rounded-full font-bold flex items-center gap-2 mx-auto transition-colors hover:bg-[#b2f03d]"
+            className="bg-[#FAF7F2] text-black px-8 py-4 rounded-full font-bold flex items-center gap-2 mx-auto transition-colors hover:cursor-pointer hover:bg-[#b2f03d]"
           >
-            Get Started
+            Start finding
             <ArrowRight size={20} />
           </motion.button>
         </motion.div>

@@ -140,7 +140,7 @@ function StepThreeVisual() {
           >
             <CheckCircle size={40} weight="fill" className="text-emerald-500" />
           </motion.div>
-          <p className="text-[#2D2621] font-black text-xl tracking-tighter leading-none mb-1">You did it!</p>
+          <p className="text-[#2D2621] font-bold text-xl tracking-tighter leading-none mb-1">You did it!</p>
           <p className="text-[#2D2621]/40 text-xs font-bold uppercase tracking-widest">Gesture completed</p>
         </motion.div>
 
@@ -159,17 +159,17 @@ function StepThreeVisual() {
 
         <div className="flex items-center justify-between text-center gap-4 px-2">
           <div>
-            <p className="text-[#2D2621] text-2xl font-black leading-none mb-1">12</p>
+            <p className="text-[#2D2621] text-2xl font-bold leading-none mb-1">12</p>
             <p className="text-[#2D2621]/30 text-[10px] font-bold uppercase tracking-widest leading-none">Gestures</p>
           </div>
           <div className="w-px h-8 bg-black/5" />
           <div>
-            <p className="text-[#2D2621] text-2xl font-black leading-none mb-1">5</p>
+            <p className="text-[#2D2621] text-2xl font-bold leading-none mb-1">5</p>
             <p className="text-[#2D2621]/30 text-[10px] font-bold uppercase tracking-widest leading-none">Streak</p>
           </div>
           <div className="w-px h-8 bg-black/5" />
           <div>
-            <p className="text-[#2D2621] text-2xl font-black leading-none mb-1">8</p>
+            <p className="text-[#2D2621] text-2xl font-bold leading-none mb-1">8</p>
             <p className="text-[#2D2621]/30 text-[10px] font-bold uppercase tracking-widest leading-none">Smiles</p>
           </div>
         </div>
@@ -195,7 +195,7 @@ export function HowItWorks() {
           <h2 className="text-5xl md:text-8xl font-serif text-[#2D2621] tracking-tighter italic mb-8">
             How It Works
           </h2>
-          <p className="text-xl md:text-2xl text-[#2D2621]/50 max-w-2xl mx-auto font-medium">
+          <p className="text-xl md:text-2xl text-[#2D2621]/80 max-w-2xl mx-auto font-semibold">
             Three simple steps to transform your daily routine into a journey of kindness.
           </p>
         </motion.div>
@@ -251,7 +251,7 @@ export function HowItWorks() {
                   transition={{ duration: 0.4 }}
                 >
                   <h3 className="text-[#2D2621] text-2xl md:text-3xl font-serif italic mb-4 leading-tight">{step.headline}</h3>
-                  <p className="text-[#2D2621]/60 text-lg md:text-xl leading-relaxed font-medium">{step.description}</p>
+                  <p className="text-[#2D2621]/80 text-lg md:text-xl leading-relaxed font-semibold">{step.description}</p>
                 </motion.div>
               </motion.div>
             )

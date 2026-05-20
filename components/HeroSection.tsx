@@ -34,7 +34,7 @@ export function HeroSection() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.8 }}
-          className="text-xl md:text-2xl max-w-3xl mb-12 font-medium leading-relaxed text-[#2D2621]/50"
+          className="text-xl md:text-2xl max-w-3xl mb-16 font-semibold leading-relaxed text-[#2D2621]"
         >
           Smilo helps you show up for the people around you with small gestures that leave a big mark. Private, meaningful, and always free.
         </motion.p>
@@ -45,14 +45,15 @@ export function HeroSection() {
           transition={{ delay: 0.6, duration: 0.8 }}
           className="flex flex-col items-center gap-8"
         >
-          <motion.button 
+           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-black text-white px-14 py-6 rounded-[2rem] text-xl font-bold flex items-center justify-center gap-4 hover:shadow-2xl hover:shadow-black/20 transition-all"
+            className="bg-[#FAF7F2] text-black px-8 py-4 rounded-full font-bold flex items-center gap-2 mx-auto transition-colors hover:cursor-pointer hover:bg-[#b2f03d]"
           >
-            Start Smiling <ArrowRight size={24} />
+            Start finding
+            <ArrowRight size={20} />
           </motion.button>
-          <p className="text-[#2D2621]/30 font-serif italic text-lg tracking-wide">It's completely free to start</p>
+          <p className="text-[#2D2621]/50 font-serif italic text-lg tracking-wide">It's completely free to start</p>
         </motion.div>
       </div>
     </section>

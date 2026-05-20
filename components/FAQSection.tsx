@@ -14,21 +14,21 @@ interface FAQItem {
 const faqItems: FAQItem[] = [
   {
     id: 1,
-    question: "How does Smilo suggest gestures for me?",
+    question: "What if I'm not a naturally kind person?",
     answer:
-      "Smilo offers a growing library of gestures for strangers, friends, family, and colleagues. You can browse freely or get a daily suggestion to keep things fresh.",
+      "Nobody is, every day. That's exactly why Smilo exists. We suggest the gesture, you just show up.",
   },
   {
     id: 2,
-    question: "Does Smilo share my data or activity?",
+    question: "How is this different from a to-do app?",
     answer:
-      "Never. Your gestures are yours alone. We don't share, sell, or display your activity anywhere.",
+      "A to-do app optimises your day for productivity. Smilo optimises it for the people around you. Different goal, different feeling at the end of the day.",
   },
   {
     id: 3,
     question: "Is Smilo really free?",
     answer:
-      "100%. No hidden plans, no premium tiers. Smilo is free for everyone, forever.",
+      "Always. Kindness shouldn't cost anything, and neither should the nudge to practise it.",
   },
 ]
 
@@ -66,14 +66,14 @@ export function FAQSection() {
                 onClick={() => setActiveId(activeId === item.id ? null : item.id)}
                 className="w-full py-8 flex items-center justify-between text-left group transition-all duration-300"
               >
-                <span className={`text-xl md:text-2xl font-semibold transition-all duration-300 ${
+                <span className={`text-xl md:text-2xl font-semibold italic font-serif transition-all duration-300 ${
                   activeId === item.id ? 'text-[#2D2621]' : 'text-[#2D2621]/70'
                 }`}>
                   {item.question}
                 </span>
                 <div className={`shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 ${
                   activeId === item.id 
-                    ? 'bg-[#2D2621] text-[#FAF7F2] rotate-180' 
+                    ? 'bg-[#2D2621] text-[#FAF7F2]  rotate-180' 
                     : 'bg-[#2D2621] text-[#FAF7F2] hover:scale-110'
                 }`}>
                   {activeId === item.id ? (
@@ -94,7 +94,7 @@ export function FAQSection() {
                     className="overflow-hidden"
                   >
                     <div className="pb-12">
-                      <p className="text-[#2D2621]/60 text-lg leading-relaxed max-w-2xl">
+                      <p className="text-[#2D2621]/60 text-lg leading-relaxed font-semibold max-w-2xl">
                         {item.answer}
                       </p>
                     </div>

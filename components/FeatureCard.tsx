@@ -31,10 +31,10 @@ export function FeatureCard({
       </div>
       
       <div className="flex flex-col gap-4">
-        <h3 className="text-3xl font-black uppercase italic tracking-tight">
+        <h3 className="text-3xl font-bold font-serif italic tracking-tight">
           {title}
         </h3>
-        <p className={`text-lg leading-relaxed font-medium ${dark ? "opacity-90" : "opacity-80"}`}>
+        <p className={`text-lg leading-relaxed font-semibold ${dark ? "text-white/90" : "text-black/80"}`}>
           {description}
         </p>
       </div>

@@ -56,34 +56,25 @@ export function WhyItMatters() {
             className="space-y-10"
           >
             <div>
-              <h2 className="text-5xl md:text-7xl font-serif italic text-[#2D2621] leading-[1.1] mb-8 tracking-tighter">
+              <h2 className="text-6xl md:text-7xl font-serif font-medium italic text-[#2D2621] leading-[1.1] mb-8 tracking-tighter">
                 Reconnect with <br /> people
               </h2>
-              <p className="text-xl md:text-2xl text-[#2D2621]/60 leading-relaxed font-medium max-w-xl">
+              <p className="text-xl md:text-2xl text-[#2D2621]/80 leading-relaxed font-semibold max-w-xl">
                 Research shows that meaningful gestures, however small, boost happiness for both the giver and the receiver. Smilo is built around that truth.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-4">
+            <div className=" pt-4">
               <div className="space-y-4">
                 <div className="text-orange-500">
                   <Users size={32} weight="fill" />
                 </div>
-                <h4 className="text-xl font-black text-[#2D2621] tracking-tight">Deeper connections</h4>
-                <p className="text-[#2D2621]/50 leading-relaxed">
+                <h4 className="text-xl font-bold font-serif text-[#2D2621] tracking-tight">Deeper connections</h4>
+                <p className="text-[#2D2621]/70 leading-relaxed font-medium">
                   Every gesture on Smilo is designed to strengthen real bonds, not followers or likes.
                 </p>
               </div>
 
-              <div className="space-y-4">
-                <div className="text-orange-500">
-                  <Handshake size={32} weight="fill" />
-                </div>
-                <h4 className="text-xl font-black text-[#2D2621] tracking-tight">Built-in accountability</h4>
-                <p className="text-[#2D2621]/50 leading-relaxed">
-                  Stay on track together with group rewards that make going offline rewarding.
-                </p>
-              </div>
             </div>
           </motion.div>
 
@@ -105,79 +96,12 @@ export function WhyItMatters() {
                     <Heart size={24} weight="fill" />
                   </div>
                   <div>
-                    <p className="text-[#2D2621] font-black text-sm leading-none mb-1">Momentum</p>
-                    <p className="text-[#2D2621]/40 text-[10px] font-bold uppercase tracking-widest">Kindness is contagious</p>
+                    <p className="text-[#2D2621] font-bold text-sm leading-none mb-1">Momentum</p>
+                    <p className="text-[#2D2621]/60 text-[10px] font-bold uppercase tracking-widest">Kindness is contagious</p>
                   </div>
                 </div>
               }
             />
-          </motion.div>
-        </div>
-
-        {/* Block 2: Small acts, every day */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className="relative lg:order-1 order-2"
-          >
-           
-             
-             <VisualContainer 
-                src="/images/carousel/3.jfif"
-                alt="Friends laughing"
-                badge={
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center text-teal-600">
-                      <TrendUp size={24} weight="bold" />
-                    </div>
-                    <div>
-                      <p className="text-[#2D2621] font-black text-sm leading-none mb-1">Growth</p>
-                      <p className="text-[#2D2621]/40 text-[10px] font-bold uppercase tracking-widest">A way of life</p>
-                    </div>
-                  </div>
-                }
-              />
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="space-y-10 lg:order-2 order-1"
-          >
-            <div>
-              <h2 className="text-5xl md:text-7xl font-serif italic text-[#2D2621] leading-[1.1] mb-8 tracking-tighter">
-                Small acts, <br /> every day
-              </h2>
-              <p className="text-xl md:text-2xl text-[#2D2621]/60 leading-relaxed font-medium max-w-xl">
-                Kindness isn't a one-time event; it's a practice. Smilo helps you build the "kindness muscle" with reminders that fit into your busy life.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {[
-                { text: "Turn 'I should' into 'I did' with gentle nudges.", icon: Sparkle, color: "text-amber-500" },
-                { text: "Keep the momentum going with personal streaks.", icon: Heart, color: "text-red-500" },
-                { text: "Celebrate the small wins that make a big difference.", icon: CheckCircle, color: "text-emerald-500" }
-              ].map((item, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="flex items-center gap-4 bg-white/50 backdrop-blur-sm p-5 rounded-[2rem] border border-black/5 group hover:bg-white transition-all"
-                >
-                  <div className={item.color}>
-                    <item.icon size={28} weight="fill" className="group-hover:scale-110 transition-transform" />
-                  </div>
-                  <span className="text-[#2D2621] font-bold tracking-tight text-lg">{item.text}</span>
-                </motion.div>
-              ))}
-            </div>
           </motion.div>
         </div>
 
